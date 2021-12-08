@@ -25,7 +25,6 @@ package uk.co.jcox.votemod.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import uk.co.jcox.votemod.Main;
 
 @CommandAlias("vote|v|votar|abstimmung")
