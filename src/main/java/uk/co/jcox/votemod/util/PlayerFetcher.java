@@ -48,14 +48,7 @@ public class PlayerFetcher implements Runnable {
         this.playerName = playerName;
         this.cf = cf;
     }
-
-    static {
-        cache = new HashMap<>();
-        cache.put("norrydash", UUID.fromString("2900aa57-775e-42dc-b1c2-090ba89dc89f"));
-        cache.put("cmbobsworth", UUID.fromString("3c5fd3eb-535f-407e-a96f-d0b51b08d137"));
-        cache.put("moist_gaming", UUID.fromString("4a195fda-014b-4d34-8022-57ad4ad6898f"));
-    }
-
+    
     @Override
     public void run() {
 
