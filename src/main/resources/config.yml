@@ -1,0 +1,30 @@
+#Language - Default will choose the language of the JVM installed
+#Supported Languages
+#en, en, de
+lang: default
+
+#Number of votes ongoing allowed at one time. It is recommended to have this on 1
+allowed-ongoing-votes: 1
+
+#Time at which voting is made available. To make votes always available set enable-time false
+enable-time: false
+start-time: 18-00
+end-time: 09-00
+
+#Number of votes required for a full vote completion. This is expressed as a percentage
+needed-votes: 20
+
+#How many players need to be online before someone can vote.
+required-players: 3
+
+#IP or standard Ban
+ban-method: standard
+
+#How long does it take for a ban to expire (in hours). Set 0 for never
+ban-time: 0
+
+#Votes timeout in seconds. How long does it take for a vote to expire
+timeout: 60
+
+#Broadcast vote details
+broadcast: true

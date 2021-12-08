@@ -1,0 +1,33 @@
+private boolean checkTargetHasBypass(String targetName) {
+        Messenger.log("Checking if player has bypass");
+        PlayerFetcher playerFetcher = new PlayerFetcher(targetName);
+        //todo Async sync task whatever. fix! This is an issue in pardon as well
+        //1 solution
+        //STEP ONE - Set an async task on getting the UUID
+        //STEP TWO - Set a sync task to run 10 seconds later
+        //Step Three - Finish
+
+        UUID playerUuid = playerFetcher.getUuid();
+        final OfflinePlayer[] offlinePlayer = {null};
+        final boolean[] hasBypass = {false};
+
+        Runnable task = () -> {
+            offlinePlayer[0] = Bukkit.getOfflinePlayer(playerUuid);
+
+            Messenger.log("Found offline player for " + targetName);
+            String world = Bukkit.getWorlds().get(0).getName();
+            if(getPermissions().playerHas(world, offlinePlayer[0], "votemod.bypass")) {
+                Messenger.log("Player has bypass");
+                hasBypass[0] = true;
+            } else {
+                Messenger.log("Player does not have bypass");
+                hasBypass[0] = false;
+            }
+
+        };
+
+
+
+
+        return false;
+    }
