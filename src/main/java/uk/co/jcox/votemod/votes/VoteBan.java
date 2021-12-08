@@ -27,7 +27,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;

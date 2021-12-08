@@ -27,8 +27,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
 
-import java.util.Arrays;
-
 public class Messenger {
 
     private static Main plugin;

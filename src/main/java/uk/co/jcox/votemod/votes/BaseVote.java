@@ -23,7 +23,6 @@
 package uk.co.jcox.votemod.votes;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
 import uk.co.jcox.votemod.util.Messenger;
