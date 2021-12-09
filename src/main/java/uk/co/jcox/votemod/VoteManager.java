@@ -37,18 +37,14 @@ public class VoteManager {
     private final Map<String, BaseVote> ongoing;
     private final Main plugin;
     private boolean broadcast;
-    private final LocalTime startTime;
-    private final LocalTime endTime;
     private final int requiredPlayers;
 
     public VoteManager(Main plugin) {
         ongoing = new HashMap<>();
         this.plugin = plugin;
         broadcast = plugin.getConfig().getBoolean("broadcast");
-
-        this.startTime = LocalTime.parse(plugin.getConfig().getString("start-time").replace("-", ":"));
-        this.endTime = LocalTime.parse(plugin.getConfig().getString("end-time").replace("-", ":"));
         this.requiredPlayers = plugin.getConfig().getInt("required-players");
+
     }
 
     public void newVote(BaseVote vote) {
@@ -65,7 +61,7 @@ public class VoteManager {
         PlayerFetcher pf = new PlayerFetcher(vote.getTargetPlayer(), cf);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(vote.getTargetPlayer(), cf));
         cf.whenComplete( (res, err) -> {
-            System.out.println("TEST ONE");
+
             if(err != null) {
                 err.printStackTrace();
                 Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("no-such-player-message"));
@@ -73,12 +69,8 @@ public class VoteManager {
                 return;
             }
 
-            System.out.println("TEST TWO");
-
             OfflinePlayer op = Bukkit.getOfflinePlayer(res);
             String world = Bukkit.getWorlds().get(0).getName();
-
-            System.out.println("TEST THREE");
 
             System.out.println(Main.getPermissions().playerHas(world, op, "votemod.bypass"));
 
@@ -87,10 +79,8 @@ public class VoteManager {
                 String msg = plugin.getLangValue("started-vote-message");
                 Messenger.broadcast(vote.getSourcePlayer().getName() + " " + msg + " " + vote.getTargetPlayer());
                 vote.validate();
-                System.out.println("TEST FOUR");
             } else {
                 Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("bypass-message"));
-                System.out.println("TEST FIVE");
             }
         } );
     }
@@ -173,23 +163,7 @@ public class VoteManager {
             return false;
         }
 
-        if( plugin.getConfig().getBoolean("enable-time")) {
-            //todo time is not working
-            LocalTime current = LocalTime.now();
-
-            System.out.println("Current time: " + current);
-            System.out.println("Start time: " + startTime);
-            System.out.println("ending  time: " + endTime);
-
-            if(startTime.isAfter(current) && endTime.isAfter(current)) {
-                //The time is correct
-                return true;
-            }
-            //todo message
-            Messenger.sendMessage(source, plugin.getLangValue("time-error-message"));
-        }
-
-
+        //todo implement a time range here.
         return false;
     }
 
