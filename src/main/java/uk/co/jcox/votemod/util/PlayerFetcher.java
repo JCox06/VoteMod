@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerFetcher implements Runnable {
 
-    private static Map<String, UUID> cache;
+    private static final Map<String, UUID> cache = new HashMap<>();
 
     private static final String LINK = "https://api.mojang.com/users/profiles/minecraft/";
     private String playerName;
@@ -48,7 +48,7 @@ public class PlayerFetcher implements Runnable {
         this.playerName = playerName;
         this.cf = cf;
     }
-    
+
     @Override
     public void run() {
 

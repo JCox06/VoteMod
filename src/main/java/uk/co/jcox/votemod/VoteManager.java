@@ -65,23 +65,32 @@ public class VoteManager {
         PlayerFetcher pf = new PlayerFetcher(vote.getTargetPlayer(), cf);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(vote.getTargetPlayer(), cf));
         cf.whenComplete( (res, err) -> {
+            System.out.println("TEST ONE");
             if(err != null) {
                 err.printStackTrace();
                 Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("no-such-player-message"));
-                Messenger.log("Could not get player. This could be the result of Mojang being down!");
+                Messenger.log("Could not get player.");
                 return;
             }
 
+            System.out.println("TEST TWO");
+
             OfflinePlayer op = Bukkit.getOfflinePlayer(res);
             String world = Bukkit.getWorlds().get(0).getName();
+
+            System.out.println("TEST THREE");
+
+            System.out.println(Main.getPermissions().playerHas(world, op, "votemod.bypass"));
 
             if(! Main.getPermissions().playerHas(world, op, "votemod.bypass")) {
                 this.ongoing.put(vote.getTargetPlayer(), vote);
                 String msg = plugin.getLangValue("started-vote-message");
                 Messenger.broadcast(vote.getSourcePlayer().getName() + " " + msg + " " + vote.getTargetPlayer());
                 vote.validate();
+                System.out.println("TEST FOUR");
             } else {
                 Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("bypass-message"));
+                System.out.println("TEST FIVE");
             }
         } );
     }
@@ -160,22 +169,27 @@ public class VoteManager {
         int numberOfPlayers = Bukkit.getServer().getOnlinePlayers().size();
 
         if(! (numberOfPlayers >= requiredPlayers)) {
-            source.sendMessage("less-required-message");
+            source.sendMessage(plugin.getLangValue("less-required-message"));
             return false;
         }
 
-        if(! plugin.getConfig().getBoolean("enable-time")) {
-            return true;
+        if( plugin.getConfig().getBoolean("enable-time")) {
+            //todo time is not working
+            LocalTime current = LocalTime.now();
+
+            System.out.println("Current time: " + current);
+            System.out.println("Start time: " + startTime);
+            System.out.println("ending  time: " + endTime);
+
+            if(startTime.isAfter(current) && endTime.isAfter(current)) {
+                //The time is correct
+                return true;
+            }
+            //todo message
+            Messenger.sendMessage(source, plugin.getLangValue("time-error-message"));
         }
 
-        LocalTime current = LocalTime.now();
-        if(current.isAfter(startTime) && current.isBefore(endTime)) {
-            //The time is correct
-            return true;
-        }
 
-        //todo message
-        Messenger.sendMessage(source, "time-error-message");
         return false;
     }
 

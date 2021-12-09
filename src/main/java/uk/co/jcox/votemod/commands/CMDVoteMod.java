@@ -39,7 +39,6 @@ public class CMDVoteMod extends BaseCommand {
     }
 
     @Subcommand("clearvotes")
-    @CommandAlias("clearvotes|cv|clear")
     @CommandPermission("votemod.admin")
     public void clearVotes(Player player) {
         player.sendMessage(plugin.getLangValue("reset-vote-manager-message"));
@@ -47,7 +46,6 @@ public class CMDVoteMod extends BaseCommand {
     }
 
     @Subcommand("removevote")
-    @CommandAlias("delete|remove|removevote")
     @CommandPermission("votemod.admin")
     @Syntax("<targetName>")
     public void clearVote(Player player, String args[]) {
@@ -56,7 +54,6 @@ public class CMDVoteMod extends BaseCommand {
     }
 
     @Subcommand("bug")
-    @CommandAlias("reportbug|bugreport")
     @Description("Tells players how to submit a bug report")
     public void bugReport(Player player) {
         String msg = plugin.getLangValue("bug-report-message");
@@ -64,7 +61,6 @@ public class CMDVoteMod extends BaseCommand {
     }
 
     @Subcommand("list")
-    @CommandAlias("list|ongoing")
     @Description("Lists the current ongoing votes")
     public void listVotes(Player player) {
         plugin.getVoteManager().listVotes(player);
