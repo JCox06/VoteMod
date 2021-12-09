@@ -5,7 +5,7 @@ The Admin is offline, so you can't ask them.
 VoteMod fixes this issue by allowing standard players to vote on certain things. Read more
 below.
 
-####<u> What does VoteMod do? </u>
+## <u> What does VoteMod do? </u>
 Standard small grouped survival Multiplayer servers in Minecraft face many problems
 with regard to server administration (well they have from my own experience) this is because
 the servers consist of a group of friends, where only a select few of players are given 
