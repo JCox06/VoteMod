@@ -96,7 +96,6 @@ public class VoteManager {
             String personalMsg = plugin.getLangValue("pass-vote-personal-message");
             String votedMsg = plugin.getLangValue("pass-vote-message");
             if(broadcast) Messenger.broadcast(voter.getName() + " " + votedMsg + " " + target);
-//            else voter.sendMessage(personalMsg);
             else Messenger.sendMessage(voter, personalMsg);
             ongoing.get(target).addVoter(voter);
         }
@@ -164,7 +163,7 @@ public class VoteManager {
         }
 
         //todo implement a time range here.
-        return false;
+        return true;
     }
 
     public void listVotes(Player player) {
