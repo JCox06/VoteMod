@@ -22,6 +22,7 @@
 
 package uk.co.jcox.votemod.util;
 
+import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -58,7 +59,16 @@ public class PlayerFetcher implements Runnable {
             return;
         }
 
-        Messenger.log("Sending Request: " + LINK + playerName);
+        if(Bukkit.getPlayer(playerName) != null) {
+            Messenger.log("Player is online and the UUID is already found");
+            UUID playerUuid = Bukkit.getPlayer(playerName).getUniqueId();
+            Messenger.log("Adding player to cache...");
+            cache.put(playerName, playerUuid);
+            cf.complete(playerUuid);
+            return;
+        }
+
+        Messenger.log("Player is not online and not present in the cache. Sending Request: " + LINK + playerName);
         try{
             URL url = new URL(LINK + playerName);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -92,7 +102,6 @@ public class PlayerFetcher implements Runnable {
             uuid = UUID.fromString(getFullUUID( (String) data.get("id")));
             cache.put(playerName, uuid);
             cf.complete(uuid);
-
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
