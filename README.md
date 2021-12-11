@@ -19,7 +19,7 @@ VoteMod is a plugin for Spigot Minecraft Servers that aims to remove these issue
 done through a voting-like system. This mechanic allows standard players to take
 administrative actions on a server.
 
-These actions can be: ban, unban, mute, and unmute. 
+The current actions are ban and unban but many more are being planned!
 
 #### <u>Disclaimer and info</u>
 This is a small project that I hope to work on. I'm going to be honest, although the plugin
