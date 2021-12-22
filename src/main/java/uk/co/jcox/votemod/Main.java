@@ -22,6 +22,7 @@
 
 package uk.co.jcox.votemod;
 
+import co.aikar.commands.PaperCommandManager;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -30,12 +31,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import uk.co.jcox.votemod.VoteManager;
 import uk.co.jcox.votemod.commands.CMDNewVote;
 import uk.co.jcox.votemod.commands.CMDVote;
 import uk.co.jcox.votemod.commands.CMDVoteMod;
 import uk.co.jcox.votemod.util.Messenger;
-import co.aikar.commands.PaperCommandManager;
 
 import java.io.File;
 import java.util.Locale;

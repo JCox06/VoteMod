@@ -32,8 +32,8 @@ import java.util.List;
 
 public abstract class BaseVote {
     protected Main plugin;
-    private List<Player> voters;
-    private String targetPlayerName;
+    private final List<Player> voters;
+    private final String targetPlayerName;
     private int requiredPlayers;
     private boolean isOnlineVote;
 
