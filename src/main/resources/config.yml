@@ -1,3 +1,9 @@
+#VoteMod - https://github.com/JCox06/VoteMod
+#For this plugin to work you MUST!
+#     1) Install the Vault plugin
+#     2) Have the server in online mode
+
+
 #Language - Default will choose the language of the JVM installed
 #Supported Languages
 #en, en, de
