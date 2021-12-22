@@ -119,4 +119,8 @@ public class PlayerFetcher implements Runnable {
         String rest = uuid.substring(20);
         return i + j  + k + l + rest;
     }
+
+    public static void saveCache() {
+
+    }
 }

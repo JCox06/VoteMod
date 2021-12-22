@@ -69,6 +69,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        checkServerOnlineState();
         initializeConfig();
         Messenger.setMessenger(this);
         VERSION = this.getDescription().getVersion();
@@ -125,6 +126,13 @@ public class Main extends JavaPlugin {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
 
+    }
+
+    public void checkServerOnlineState() {
+        if(! (getServer().getOnlineMode())) {
+        Messenger.log(getLangValue("online-mode-log"));
+        getServer().getPluginManager().disablePlugin(this);
+        }
     }
 
     public void initializeCMD() {
