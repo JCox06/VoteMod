@@ -69,12 +69,12 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        checkServerOnlineState();
         initializeConfig();
+        initializeLocale();
+        if(!unitTesting) checkServerOnlineState();
         Messenger.setMessenger(this);
         VERSION = this.getDescription().getVersion();
         this.voteManager = new VoteManager(this);
-        initializeLocale();
         if(!unitTesting) initializeBstats();
         if(!unitTesting) initializeVault();
         initializeCMD();
@@ -129,7 +129,8 @@ public class Main extends JavaPlugin {
     }
 
     public void checkServerOnlineState() {
-        if(! (getServer().getOnlineMode())) {
+        System.out.println(getServer().getOnlineMode());
+        if(! getServer().getOnlineMode() ) {
         Messenger.log(getLangValue("online-mode-log"));
         getServer().getPluginManager().disablePlugin(this);
         }
