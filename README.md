@@ -1,7 +1,7 @@
 # <u> VoteMod (A3.5)</u>
 How many times have you had it? You have a Minecraft server and ask your newly 
-invited friend to join too. You tell them the IP, they log in, and-- oh, yeah the Whitelist.
-The Admin is offline, so you can't ask them.  
+invited friend to join too. You tell them the IP, they log in, and-- oh, yeah the Whitelist. And to make matter worse
+the Admin is offline, so you can't ask them.  
 VoteMod fixes this issue by allowing standard players to vote on certain things. Read more
 below.
 
