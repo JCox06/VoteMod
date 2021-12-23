@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 public class VotePardon extends BaseVote{
 
     public VotePardon(Player sourcePlayer, String targetPlayerName, Main plugin) {
-        super(sourcePlayer, targetPlayerName, plugin, false, "pardon");
+        super(sourcePlayer, targetPlayerName, plugin,"pardon");
     }
 
     @Override
@@ -46,9 +46,9 @@ public class VotePardon extends BaseVote{
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(playerName, cf));
         cf.whenComplete( (res, err) -> {
             if(err == null) {
-                //This is not working
-                System.out.println("Player should be whitelisted!");
-                Bukkit.getOfflinePlayer(res).setWhitelisted(true);
+                Bukkit.getScheduler().runTask(plugin, bukkitTask -> {
+                    Bukkit.getOfflinePlayer(res).setWhitelisted(true);
+                });
             }
         });
 

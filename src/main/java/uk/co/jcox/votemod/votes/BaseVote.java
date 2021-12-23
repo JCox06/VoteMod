@@ -33,16 +33,14 @@ public abstract class BaseVote {
     private final List<Player> voters;
     private final String targetPlayerName;
     private int requiredPlayers;
-    private boolean isOnlineVote;
-    private String name;
+    private final String name;
 
-    protected BaseVote(Player sourcePlayer, String targetPlayerName, Main plugin, boolean isOnlineVote, String name) {
+    protected BaseVote(Player sourcePlayer, String targetPlayerName, Main plugin, String name) {
         this.targetPlayerName = targetPlayerName;
         this.voters = new ArrayList<>();
-        //The player to initialize the vote, will always be at index 0 in the list
         this.voters.add(0, sourcePlayer);
-        this.isOnlineVote = isOnlineVote;
         this.plugin = plugin;
+        this.name = name;
         calculateRequired();
     }
 
@@ -58,13 +56,13 @@ public abstract class BaseVote {
         this.voters.add(votingPlayer);
             if (voters.size() >= requiredPlayers) {
                 onAction(targetPlayerName);
-                plugin.getVoteManager().remove(targetPlayerName);
+                plugin.getVoteManager().remove(targetPlayerName, true);
                 System.gc();
             }
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return this.name;
     }
 
     public final int getRequired() {
@@ -83,8 +81,8 @@ public abstract class BaseVote {
         double votePercentage = plugin.getConfig().getInt("needed-votes");
         double playersOnline = Bukkit.getServer().getOnlinePlayers().size();
         double votesRequired = (votePercentage / 100) * playersOnline;
-        System.out.println("The votes needed: " + (int) votesRequired);
-        this.requiredPlayers = (int) votesRequired;
+        System.out.println("REQUIRED: " + Math.round(votesRequired));
+        this.requiredPlayers = (int) Math.round(votesRequired);
     }
     protected abstract void onAction(String playerName);
 }

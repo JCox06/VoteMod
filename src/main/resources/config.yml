@@ -18,10 +18,10 @@ start-time: 18-00
 end-time: 09-00
 
 #Number of votes required for a full vote completion. This is expressed as a percentage
-needed-votes: 20
+needed-votes: 50
 
 #How many players need to be online before someone can vote.
-required-players: 3
+required-players: 5
 
 #IP or standard Ban
 ban-method: standard
