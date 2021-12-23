@@ -171,7 +171,7 @@ public class VoteManager {
     public void listVotes(Player player) {
 
         if(ongoing.size() == 0) {
-            Messenger.sendMessage(player, "no-ongoing-votes-message");
+            Messenger.sendMessage(player, plugin.getLangValue("no-ongoing-votes-message"));
             return;
         }
         for(BaseVote vote : ongoing.values()) {
