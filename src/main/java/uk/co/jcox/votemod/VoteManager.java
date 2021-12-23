@@ -34,155 +34,152 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+
 public class VoteManager {
     private final Map<String, BaseVote> ongoing;
     private final Main plugin;
-    private boolean broadcast;
-    private final int requiredPlayers;
 
     public VoteManager(Main plugin) {
-        ongoing = new HashMap<>();
+        this.ongoing = new HashMap<>();
         this.plugin = plugin;
-        broadcast = plugin.getConfig().getBoolean("broadcast");
-        this.requiredPlayers = plugin.getConfig().getInt("required-players");
-
     }
+
+    private boolean checkVoter(Player source) {
+        //Check to see if the voter has the permission votemod.vote
+        if(Main.getPermissions().playerHas(source, "votemod.vote")) {
+            return true;
+        }
+        Messenger.sendMessage(source, plugin.getLangValue("votemod-vote-message"));
+        return false;
+    }
+
+
+    private boolean checkEnvironmentConditions(Player source) {
+        //Check if there are too many ongoing votes as well as check if are enough players online
+        //check players online
+        int online = Bukkit.getOnlinePlayers().size();
+        int neededOnline = plugin.getConfig().getInt("required-players");
+        if(online < neededOnline) {
+            Messenger.sendMessage(source, plugin.getLangValue("less-required-message"));
+            return false;
+        }
+
+        //Check ongoing votes
+        int numberOfVotes = ongoing.size();
+        int max = plugin.getConfig().getInt("allowed-ongoing-votes");
+
+        if(numberOfVotes >= max) {
+            Messenger.sendMessage(source, "ongoing-message");
+            return false;
+        }
+        return true;
+    }
+
 
     public void newVote(BaseVote vote) {
 
-        if(! voterCheck(vote.getSourcePlayer())) {
+        Player source = vote.getSourcePlayer();
+        String target = vote.getTargetPlayer();
+
+        if(! (checkEnvironmentConditions(source) && checkVoter(source))) {
             return;
         }
 
-        if(! checkConditions(vote.getSourcePlayer())) {
-            return;
-        }
-
+        //Check if the target has the bypass permission
         CompletableFuture<UUID> cf = new CompletableFuture<>();
-        PlayerFetcher pf = new PlayerFetcher(vote.getTargetPlayer(), cf);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(vote.getTargetPlayer(), cf));
+        PlayerFetcher pf = new PlayerFetcher(target, cf);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, pf);
         cf.whenComplete( (res, err) -> {
 
-            if(err != null) {
-                err.printStackTrace();
-                Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("no-such-player-message"));
-                Messenger.log("Could not get player.");
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(res);
+            String world = Bukkit.getWorlds().get(0).getName();
+            boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
+            if(hasBypass) {
+                Messenger.sendMessage(source, plugin.getLangValue("bypass-message"));
                 return;
             }
+            System.out.println("[1]We are on the: " + Thread.currentThread().getName());
 
-            OfflinePlayer op = Bukkit.getOfflinePlayer(res);
-            String world = Bukkit.getWorlds().get(0).getName();
+            Bukkit.getScheduler().runTask(plugin, () -> {
 
-            System.out.println(Main.getPermissions().playerHas(world, op, "votemod.bypass"));
-
-            if(! Main.getPermissions().playerHas(world, op, "votemod.bypass")) {
-                this.ongoing.put(vote.getTargetPlayer(), vote);
+                this.ongoing.put(target, vote);
                 String msg = plugin.getLangValue("started-vote-message");
-                Messenger.broadcast(vote.getSourcePlayer().getName() + " " + msg + " " + vote.getTargetPlayer());
-                vote.validate();
-            } else {
-                Messenger.sendMessage(vote.getSourcePlayer(), plugin.getLangValue("bypass-message"));
-            }
-        } );
+                System.out.println("[2]We are on the: " + Thread.currentThread().getName());
+                Messenger.broadcast(source.getName() + " " + msg + " " + vote.getTargetPlayer());
+                setTimeout(target);
+            });
+
+        });
     }
+
+    private boolean checkVoteExists(Player voter, String vote) {
+        if(ongoing.containsKey(vote)) {
+            return true;
+        }
+
+        Messenger.sendMessage(voter, "no-such-vote-message");
+        return false;
+    }
+
+    private boolean checkVoteExists(String vote) {
+        return ongoing.containsKey(vote);
+    }
+
 
     public void vote(Player voter, String target) {
-        if(checkVoteExistence(voter, target)) {
-
-            if(ongoing.get(target).getVotersContains(voter)) {
-                //todo add this msg to resource bundle
-                Messenger.sendMessage(voter, plugin.getLangValue("already-voted-message"));
-                return;
-            }
-            String personalMsg = plugin.getLangValue("pass-vote-personal-message");
-            String votedMsg = plugin.getLangValue("pass-vote-message");
-            if(broadcast) Messenger.broadcast(voter.getName() + " " + votedMsg + " " + target);
-            else Messenger.sendMessage(voter, personalMsg);
-            ongoing.get(target).addVoter(voter);
+        if(! checkVoteExists(voter, target)) {
+            return;
         }
 
-    }
-
-    public boolean remove(String target, boolean successful) {
-        if(checkVoteExistence(target)) {
-            ongoing.remove(target);
-            if(broadcast) {
-                if(successful) {
-                    String successMsg = plugin.getLangValue("successful-message").replace("|", target);
-                    Messenger.broadcast(successMsg);
-                    return true;
-                }
-
-                String expiredMsg = plugin.getLangValue("expired-message").replace("|", target);
-                Messenger.broadcast(expiredMsg);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean remove(Player source, String target) {
-        if(checkVoteExistence(source, target)) {
-            ongoing.remove(target);
-            if(broadcast) Messenger.broadcast(plugin.getLangValue("removed-vote-brc-message") + " " + source);
-            else Messenger.sendMessage(source, plugin.getLangValue("removed-vote-message"));
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkVoteExistence(String target) {
-        return this.ongoing.containsKey(target);
-    }
-
-    public boolean checkVoteExistence(Player source, String target) {
-        if(checkVoteExistence(target)) {
-            return true;
+        //Check if the voter has already voted on this particular type of vote
+        if(ongoing.get(target).containsVoter(voter)) {
+            //Voter has already voted
+            Messenger.sendMessage(voter, "already-voted-message");
+            return;
         }
 
-        Messenger.sendMessage(source, plugin.getLangValue("no-such-vote-message"));
-        return false;
+        String message = plugin.getLangValue("pass-vote-message");
+        Messenger.broadcast(voter.getName() + " " + message + " " + target);
+        ongoing.get(target).addVoter(voter);
     }
 
-    private boolean voterCheck(Player source) {
-
-        if(ongoing.size() >= plugin.getConfig().getInt("allowed-ongoing-votes")) {
-            Messenger.sendMessage(source, plugin.getLangValue("ongoing-message"));
+    public boolean remove(Player player, String vote) {
+        if( !checkVoteExists(player, vote)) {
             return false;
         }
+        ongoing.remove(vote);
 
+        Messenger.sendMessage(player, "removed-vote-message");
         return true;
     }
 
-    private boolean checkConditions(Player source) {
+    public void remove(String vote) {
+        ongoing.remove(vote);
+    }
 
-        int numberOfPlayers = Bukkit.getServer().getOnlinePlayers().size();
 
-        if(! (numberOfPlayers >= requiredPlayers)) {
-            source.sendMessage(plugin.getLangValue("less-required-message"));
-            return false;
-        }
-
-        //todo implement a time range here.
-        return true;
+    private void setTimeout(String vote) {
+        int expire = plugin.getConfig().getInt("timeout") * 20;
+        Runnable task = () -> {
+            if(checkVoteExists(vote)) {
+                ongoing.remove(vote);
+            }
+        };
+        Bukkit.getScheduler().runTaskLater(plugin, task, expire);
     }
 
     public void listVotes(Player player) {
-        //todo this is terrible and needs re-writing
-        String header = plugin.getLangValue("votes-message");
-        Messenger.sendMessage(player, "====" + header + "====");
 
+        if(ongoing.size() == 0) {
+            Messenger.sendMessage(player, "no-ongoing-votes-message");
+            return;
+        }
         for(BaseVote vote : ongoing.values()) {
-            String NAME = vote.getTargetPlayer();
-            int VOTES = vote.getNumberOfVoters();
-            String clazz = vote.getClass().getName().replaceFirst("uk.co.jcox.votemod.votes.Vote", "");
-            String TYPE = plugin.getLangValue(clazz.toLowerCase());
-
-            Messenger.log("TYPE: " + TYPE);
-
-            String msg = TYPE + " " + NAME + " [" + VOTES + " " + header + "] ";
+            String name =vote.getTargetPlayer();
+            int votes = vote.getNumberOfVoters();
+            String type = plugin.getLangValue(vote.getName());
+            String msg = (type + " " + name + " [" + votes + " " + plugin.getLangValue("votes-message") + "]");
             Messenger.sendMessage(player, msg);
         }
-
     }
 }

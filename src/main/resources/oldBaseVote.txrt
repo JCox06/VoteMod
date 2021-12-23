@@ -25,6 +25,8 @@ package uk.co.jcox.votemod.votes;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
+import uk.co.jcox.votemod.util.Messenger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public abstract class BaseVote {
         this.voters.add(0, sourcePlayer);
         this.isOnlineVote = isOnlineVote;
         this.plugin = plugin;
-        calculateRequired();
+        requiredPlayers();
     }
 
     public Player getSourcePlayer() {
@@ -56,11 +58,36 @@ public abstract class BaseVote {
 
     public final void addVoter(Player votingPlayer) {
         this.voters.add(votingPlayer);
-            if (voters.size() >= requiredPlayers) {
-                onAction(targetPlayerName);
-                plugin.getVoteManager().remove(targetPlayerName);
-                System.gc();
-            }
+        if (voters.size() >= requiredPlayers) {
+            removeVote();
+            onAction(targetPlayerName);
+        }
+    }
+
+    private void requiredPlayers() {
+        double votePercentage = plugin.getConfig().getInt("needed-votes");
+        double playersOnline = Bukkit.getServer().getOnlinePlayers().size();
+        double votesRequired = (votePercentage / 100) * playersOnline;
+        this.requiredPlayers = (int) votesRequired;
+    }
+
+    private void removeVote() {
+        plugin.getVoteManager().remove(targetPlayerName, true);
+        System.gc();
+    }
+
+    public void validate() {
+        setTimeout();
+    }
+
+    private void setTimeout() {
+
+        int timeout = plugin.getConfig().getInt("timeout") * 20;
+        Runnable task = () -> {
+            plugin.getVoteManager().remove(targetPlayerName, false);
+        };
+
+        plugin.getServer().getScheduler().runTaskLater(plugin, task, timeout);
     }
 
     public String getName() {
@@ -79,12 +106,6 @@ public abstract class BaseVote {
         return voters.size();
     }
 
-    private void calculateRequired() {
-        double votePercentage = plugin.getConfig().getInt("needed-votes");
-        double playersOnline = Bukkit.getServer().getOnlinePlayers().size();
-        double votesRequired = (votePercentage / 100) * playersOnline;
-        System.out.println("The votes needed: " + (int) votesRequired);
-        this.requiredPlayers = (int) votesRequired;
-    }
+
     protected abstract void onAction(String playerName);
 }

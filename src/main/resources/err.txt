@@ -1,0 +1,16 @@
+A Vault API request has been made on the main server thread that LuckPerms cannot safely respond to.
+This is NOT a bug - please do not report it to LuckPerms.
+Instead, please carefully read the information given below.
+
+LuckPerms cannot respond to the request because to do so:
+- it needs to lookup user data for  (an offline player) from the database
+
+Performing this lookup on the main server thread would cause your server to lag.
+There are two solutions to this problem:
+  a) Ask the author of the plugin making the request to perform Vault calls for
+     offline players "asynchronously" (using the scheduler). Additionally, prefer
+     using the methods that accept 'Player' or 'OfflinePlayer' instead of usernames.
+     You should be able to identify the plugin making the request in the trace below.
+  b) As a server admin, you can disable this exception by setting 'vault-unsafe-lookups'
+     to true in the LuckPerms configuration file. However, please use this only as
+     a last resort.

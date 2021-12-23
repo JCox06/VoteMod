@@ -66,5 +66,4 @@ public class CMDVoteMod extends BaseCommand {
         plugin.getVoteManager().listVotes(player);
     }
 
-
 }

@@ -32,5 +32,3 @@ ban-time: 0
 #Votes timeout in seconds. How long does it take for a vote to expire
 timeout: 60
 
-#Broadcast vote details
-broadcast: true

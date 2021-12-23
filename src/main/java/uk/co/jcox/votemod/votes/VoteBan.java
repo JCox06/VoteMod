@@ -35,7 +35,7 @@ import java.util.Date;
 public class VoteBan extends BaseVote {
 
     public VoteBan(Player sourcePlayer, String targetPlayerName, Main plugin) {
-        super(sourcePlayer, targetPlayerName, plugin, true);
+        super(sourcePlayer, targetPlayerName, plugin, true, "ban");
     }
 
     @Override

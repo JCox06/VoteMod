@@ -53,6 +53,8 @@ public class PlayerFetcher implements Runnable {
     @Override
     public void run() {
 
+        Thread.currentThread().setName("Player-Fetcher-Thread");
+
         if(cache.containsKey(playerName)) {
             Messenger.log("UUID was found in cache");
             cf.complete(cache.get(playerName));

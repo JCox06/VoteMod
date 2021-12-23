@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 public class VotePardon extends BaseVote{
 
     public VotePardon(Player sourcePlayer, String targetPlayerName, Main plugin) {
-        super(sourcePlayer, targetPlayerName, plugin, false);
+        super(sourcePlayer, targetPlayerName, plugin, false, "pardon");
     }
 
     @Override

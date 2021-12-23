@@ -35,7 +35,6 @@ public class BaseVoteTest {
         server.setPlayers(playersOnline);
 
         BaseVote vote = new VoteBan(server.getPlayer(0), server.getPlayer(1).getName(), plugin);
-        vote.validate();
 
         assertEquals(4, vote.getRequired());
     }
