@@ -53,8 +53,8 @@ public class Main extends JavaPlugin {
 
     private final boolean unitTesting;
 
-    public final static Logger logger = Logger.getLogger("Minecraft");
-    public final static String homepage = "https://github.com/JCox06/VoteMod/";
+    public static final Logger logger = Logger.getLogger("Minecraft");
+    public static final String HOME_PAGE = "https://github.com/JCox06/VoteMod/";
 
 
     public Main() {
@@ -108,13 +108,13 @@ public class Main extends JavaPlugin {
     private void initializeBstats() {
         //For anonymous data collection
         int pluginID = 12378;
-        Metrics metrics = new Metrics(this, pluginID);
+        new Metrics(this, pluginID);
 
     }
 
     public void printStartupMessage() {
         logger.info("~VoteMod Version: " + VERSION);
-        logger.info("~VoteMod Link: " + homepage);
+        logger.info("~VoteMod Link: " + HOME_PAGE);
     }
 
     private void initializeVault() {
@@ -129,7 +129,6 @@ public class Main extends JavaPlugin {
     }
 
     public void checkServerOnlineState() {
-        System.out.println(getServer().getOnlineMode());
         if(! getServer().getOnlineMode() ) {
         Messenger.log(getLangValue("online-mode-log"));
         getServer().getPluginManager().disablePlugin(this);

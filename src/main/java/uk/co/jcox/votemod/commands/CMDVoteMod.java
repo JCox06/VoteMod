@@ -57,7 +57,7 @@ public class CMDVoteMod extends BaseCommand {
     @Description("Tells players how to submit a bug report")
     public void bugReport(Player player) {
         String msg = plugin.getLangValue("bug-report-message");
-        Messenger.sendMessage(player, msg + " " + Main.homepage + "issues");
+        Messenger.sendMessage(player, msg + " " + Main.HOME_PAGE + "issues");
     }
 
     @Subcommand("list")
