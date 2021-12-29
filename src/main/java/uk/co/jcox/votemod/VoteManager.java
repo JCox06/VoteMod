@@ -99,7 +99,6 @@ public class VoteManager {
                 plugin.textSystem().sendMessage(source, "bypass-message");
                 return;
             }
-            System.out.println("[1]We are on the: " + Thread.currentThread().getName());
 
             Bukkit.getScheduler().runTask(plugin, () -> {
 
@@ -156,7 +155,6 @@ public class VoteManager {
     public void remove(String vote, boolean successful) {
         ongoing.remove(vote);
         if(successful) {
-            //todo add new additional system
             plugin.textSystem().broadcastMessage("successful-message", vote);
 
         } else {
@@ -186,7 +184,6 @@ public class VoteManager {
         for(BaseVote vote : ongoing.values()) {
             String name =vote.getTargetPlayer();
             int votes = vote.getNumberOfVoters();
-            System.out.println("Type:" + vote.getType());
             String type = plugin.textSystem().getResource(vote.getType());
             plugin.textSystem().sendMessage(player, "votes-message", type, name, votes + "");
         }

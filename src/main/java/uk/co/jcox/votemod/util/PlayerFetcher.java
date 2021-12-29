@@ -72,7 +72,6 @@ public class PlayerFetcher implements Runnable {
         Scanner scanner = null;
         try{
             URL url = new URL(LINK + playerName);
-            System.out.println("Contacting mojang");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
