@@ -35,9 +35,13 @@ public class TextSystem {
 
     private final ResourceBundle language;
     private final Logger logger;
+    private final boolean debug;
 
     public TextSystem(Main p) {
         logger = p.getLogger();
+        debug = p.getConfig().getBoolean("debug-mode");
+
+        debugMessage("DEBUG MODE HAS BEEN SET TO ENABLED");
 
         String languageCode = p.getConfig().getString("lang");
         Locale locale;
@@ -95,6 +99,13 @@ public class TextSystem {
     public void logMessage(String key, String ...additional) {
         String msg = populateMessage(key, additional);
         logger.info(msg);
+    }
+
+
+    public void debugMessage(String string) {
+        if(debug) {
+            logger.info("[DEBUG/MODE] " + string);
+        }
     }
 
     public String getResource(String key) {

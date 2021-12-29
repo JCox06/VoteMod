@@ -43,7 +43,7 @@ public class VotePardon extends BaseVote{
         Bukkit.getBanList(BanList.Type.IP).pardon(playerName);
 
         CompletableFuture<UUID> cf = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(playerName, cf));
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(playerName, cf, plugin.textSystem()));
         cf.whenComplete( (res, err) -> {
             if(err == null) {
                 Bukkit.getScheduler().runTask(plugin, bukkitTask -> Bukkit.getOfflinePlayer(res).setWhitelisted(true));

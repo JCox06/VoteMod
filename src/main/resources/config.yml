@@ -12,6 +12,11 @@ lang: default
 #Number of votes ongoing allowed at one time. It is recommended to have this on 1
 allowed-ongoing-votes: 1
 
+#Give bypass to players who have recently had a vote denied.
+vote-resistance: true
+#How long should a player have resistance, in minutes
+vote-resistance-expire: 5
+
 #Time at which voting is made available. To make votes always available set enable-time false
 enable-time: false
 start-time: 18-00
@@ -31,4 +36,7 @@ ban-time: 0
 
 #Votes timeout in seconds. How long does it take for a vote to expire
 timeout: 60
+
+#Logs additional messages in the console. Useful for debugging errors.
+debug-mode: false
 

@@ -45,19 +45,23 @@ public class PlayerFetcher implements Runnable {
     private static final String LINK = "https://api.mojang.com/users/profiles/minecraft/";
     private final String playerName;
     private final CompletableFuture<UUID> cf;
+    private final TextSystem tx;
 
-    public PlayerFetcher(String playerName, CompletableFuture<UUID> cf) {
+    public PlayerFetcher(String playerName, CompletableFuture<UUID> cf, TextSystem tx) {
         this.playerName = playerName;
         this.cf = cf;
+        this.tx = tx;
     }
 
     @Override
     public void run() {
 
         Thread.currentThread().setName("VoteMod/PlayerFetcher");
+        tx.debugMessage("PlayerFetcher thread has started");
 
         if(cache.containsKey(playerName)) {
             cf.complete(cache.get(playerName));
+            tx.debugMessage("Found " + playerName + " in the cache");
             return;
         }
 
@@ -65,6 +69,7 @@ public class PlayerFetcher implements Runnable {
             UUID playerUuid = Bukkit.getPlayer(playerName).getUniqueId();
             cache.put(playerName, playerUuid);
             cf.complete(playerUuid);
+            tx.debugMessage("Found " + playerName + " in the list of online players");
             return;
         }
 
@@ -75,7 +80,10 @@ public class PlayerFetcher implements Runnable {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
+            tx.debugMessage("Connecting to Mojang: " + LINK + playerName);
+
             if(connection.getResponseCode() != 200) {
+                tx.debugMessage("Error: " + connection.getResponseCode() + ". Cancelling request");
                 cf.cancel(true);
                 return;
             }
@@ -91,12 +99,14 @@ public class PlayerFetcher implements Runnable {
             JSONObject data = (JSONObject) parse.parse(response.toString());
 
             UUID uuid = UUID.fromString(getFullUUID((String) data.get("id")));
+            tx.debugMessage("Built UUID from player " + playerName + " as: " + uuid);
             cache.put(playerName, uuid);
             cf.complete(uuid);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {
             if (scanner != null) {
+                tx.debugMessage("Closing Scanner");
                 scanner.close();
             }
         }

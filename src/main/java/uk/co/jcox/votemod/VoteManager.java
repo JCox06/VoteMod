@@ -28,18 +28,18 @@ import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.util.PlayerFetcher;
 import uk.co.jcox.votemod.votes.BaseVote;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 
 public class VoteManager {
     private final Map<String, BaseVote> ongoing;
+    private final List<String> resistance;
     private final Main plugin;
 
     public VoteManager(Main plugin) {
         this.ongoing = new HashMap<>();
+        this.resistance = new ArrayList<>();
         this.plugin = plugin;
     }
 
@@ -86,12 +86,18 @@ public class VoteManager {
             return;
         }
 
+        if(resistance.contains(target)) {
+            plugin.textSystem().sendMessage(source, "bypass-message");
+            return;
+        }
+
         //Check if the target has the bypass permission
         CompletableFuture<UUID> cf = new CompletableFuture<>();
-        PlayerFetcher pf = new PlayerFetcher(target, cf);
+        PlayerFetcher pf = new PlayerFetcher(target, cf, plugin.textSystem());
         Bukkit.getScheduler().runTaskAsynchronously(plugin, pf);
+        plugin.textSystem().debugMessage("Waiting for response...");
         cf.whenComplete( (res, err) -> {
-
+            plugin.textSystem().debugMessage("Sending vault request");
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(res);
             String world = Bukkit.getWorlds().get(0).getName();
             boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
@@ -101,12 +107,12 @@ public class VoteManager {
             }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-
+                plugin.textSystem().debugMessage("Running task on main server thread");
                 this.ongoing.put(target, vote);
                 String type = plugin.textSystem().getResource(vote.getType());
-
                 plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), type,  vote.getTargetPlayer());
                 setTimeout(target);
+                plugin.textSystem().debugMessage("Added vote");
             });
 
         });
@@ -147,7 +153,7 @@ public class VoteManager {
             return false;
         }
         ongoing.remove(vote);
-
+        addResistance(vote);
         plugin.textSystem().sendMessage(player, "removed-vote-message");
         return true;
     }
@@ -159,15 +165,31 @@ public class VoteManager {
 
         } else {
             plugin.textSystem().broadcastMessage("expired-message", vote);
+            addResistance(vote);
+        }
+    }
+
+    public void addResistance(String vote) {
+        //When a vote expires or is removed by an admin. The player will gain resistance
+        if(plugin.getConfig().getBoolean("vote-resistance")) {
+            plugin.textSystem().debugMessage("Added resistance for: " + vote);
+            this.resistance.add(vote);
+
+            Runnable task = () -> resistance.remove(vote);
+
+            int time = 20 * 60 * plugin.getConfig().getInt("vote-resistance-expire");
+            Bukkit.getScheduler().runTaskLater(plugin, task, time);
         }
     }
 
 
     private void setTimeout(String vote) {
+        plugin.textSystem().debugMessage("Setting timeout for vote " + vote);
         int expire = plugin.getConfig().getInt("timeout") * 20;
         Runnable task = () -> {
             if(checkVoteExists(vote)) {
                 remove(vote, false);
+                plugin.textSystem().debugMessage("Removing expired vote: " + vote);
             }
         };
         Bukkit.getScheduler().runTaskLater(plugin, task, expire);
