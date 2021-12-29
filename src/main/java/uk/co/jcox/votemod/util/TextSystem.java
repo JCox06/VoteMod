@@ -30,7 +30,6 @@ import uk.co.jcox.votemod.Main;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 
 public class TextSystem {
 
@@ -68,12 +67,14 @@ public class TextSystem {
     }
 
     //Populate message with correct args
+    //todo This method is currently resulting in server crashes
     private String populateMessage(String key, String args[]) {
 
         String message = getLanguageValue(key);
 
         int expectedArgs = 0;
         do {
+            System.out.println(message.contains("{" + expectedArgs + "}"));
             if(message.contains("{" + expectedArgs + "}")) {
                 message.replace("{" + expectedArgs + "}", args[expectedArgs]);
                 expectedArgs++;
@@ -91,11 +92,13 @@ public class TextSystem {
         Bukkit.broadcastMessage(decorateMessage(populateMessage(key, additional)));
     }
 
-    public void broadcastMessage(String permission, String key, String ...additional) {
-        Bukkit.broadcast(decorateMessage(populateMessage(key, additional)), permission);
+
+    public void logMessage(String key, String ...additional) {
+        String msg = populateMessage(key, additional);
+        logger.info(msg);
     }
 
-    public void logMessage(String key, String ...additionals) {
-        logger.info(populateMessage(key, additionals));
+    public String getResource(String key) {
+        return language.getString(key);
     }
 }

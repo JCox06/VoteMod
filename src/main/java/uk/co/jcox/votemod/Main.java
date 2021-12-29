@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import uk.co.jcox.votemod.commands.CMDNewVote;
 import uk.co.jcox.votemod.commands.CMDVote;
 import uk.co.jcox.votemod.commands.CMDVoteMod;
-import uk.co.jcox.votemod.util.Messenger;
+import uk.co.jcox.votemod.util.TextSystem;
 
 import java.io.File;
 import java.util.Locale;
@@ -47,13 +47,12 @@ public class Main extends JavaPlugin {
     private FileConfiguration config;
     private VoteManager voteManager;
     private ResourceBundle language;
+    private TextSystem ts;
 
     private static Permission permissions = null;
     private static String VERSION;
 
     private final boolean unitTesting;
-
-    public static final Logger logger = Logger.getLogger("Minecraft");
     public static final String HOME_PAGE = "https://github.com/JCox06/VoteMod/";
 
 
@@ -69,16 +68,14 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.ts = new TextSystem(this);
         initializeConfig();
-        initializeLocale();
         if(!unitTesting) checkServerOnlineState();
-        Messenger.setMessenger(this);
         VERSION = this.getDescription().getVersion();
         this.voteManager = new VoteManager(this);
         if(!unitTesting) initializeBstats();
         if(!unitTesting) initializeVault();
         initializeCMD();
-        printStartupMessage();
     }
 
     @Override
@@ -86,19 +83,6 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-    private void initializeLocale() {
-        String lang = this.config.getString("lang");
-        Locale locale = null;
-
-        if(lang == null || lang.equalsIgnoreCase("default")) {
-            //the locale will be set the JVM
-            locale = Locale.getDefault();
-        } else {
-            locale = new Locale(lang);
-        }
-        this.language = ResourceBundle.getBundle("language", locale);
-        Messenger.log(getLangValue("determine-locale-log") + " " + locale.getLanguage());
-    }
 
     private void initializeConfig() {
         this.saveDefaultConfig();
@@ -112,17 +96,14 @@ public class Main extends JavaPlugin {
 
     }
 
-    public void printStartupMessage() {
-        logger.info("~VoteMod Version: " + VERSION);
-        logger.info("~VoteMod Link: " + HOME_PAGE);
-    }
 
     private void initializeVault() {
         if(getServer().getPluginManager().getPlugin("Vault") == null) {
-            Messenger.log(getLangValue("permission-setup-fail-log"));
+            ts.logMessage("permission-setup-fail-log");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
 
@@ -130,7 +111,7 @@ public class Main extends JavaPlugin {
 
     public void checkServerOnlineState() {
         if(! getServer().getOnlineMode() ) {
-        Messenger.log(getLangValue("online-mode-log"));
+        textSystem().logMessage("online-mode-log");
         getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -140,10 +121,6 @@ public class Main extends JavaPlugin {
         manager.registerCommand(new CMDNewVote(this));
         manager.registerCommand(new CMDVote(this));
         manager.registerCommand(new CMDVoteMod(this));
-    }
-
-    public String getLangValue(String value) {
-        return this.language.getString(value);
     }
 
     public VoteManager getVoteManager() {
@@ -156,6 +133,10 @@ public class Main extends JavaPlugin {
 
     public static Permission getPermissions() {
         return permissions;
+    }
+
+    public TextSystem textSystem() {
+        return this.ts;
     }
 
 }

@@ -56,34 +56,33 @@ public class PlayerFetcher implements Runnable {
         Thread.currentThread().setName("Player-Fetcher-Thread");
 
         if(cache.containsKey(playerName)) {
-            Messenger.log("UUID was found in cache");
             cf.complete(cache.get(playerName));
             return;
         }
 
         if(Bukkit.getPlayer(playerName) != null) {
-            Messenger.log("Player is online and the UUID is already found");
             UUID playerUuid = Bukkit.getPlayer(playerName).getUniqueId();
-            Messenger.log("Adding player to cache...");
             cache.put(playerName, playerUuid);
             cf.complete(playerUuid);
             return;
         }
 
-        Messenger.log("Player is not online and not present in the cache. Sending Request: " + LINK + playerName);
+        if(true) {
+            System.out.println("Testing.. .Skipping mojang");
+            cf.complete(UUID.fromString("09413898-5191-4627-9a03-0cdcfce8857b"));
+            return;
+        }
+
         try{
             URL url = new URL(LINK + playerName);
+            System.out.println("Contacting mojang");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            Messenger.log("Connecting to Mojang...");
             connection.connect();
 
             int rescode = connection.getResponseCode();;
 
-            Messenger.log("Connected with response code: " + rescode);
-
             if (rescode != 200) {
-                Messenger.log("Aborting...");
                 cf.cancel(true);
                 return;
             }
@@ -100,7 +99,6 @@ public class PlayerFetcher implements Runnable {
             JSONParser parse = new JSONParser();
             JSONObject data = (JSONObject) parse.parse(response.toString());
 
-            Messenger.log("Received external UUID for " + playerName + ": " + data.get("id"));
             uuid = UUID.fromString(getFullUUID( (String) data.get("id")));
             cache.put(playerName, uuid);
             cf.complete(uuid);

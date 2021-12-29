@@ -25,7 +25,6 @@ package uk.co.jcox.votemod;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import uk.co.jcox.votemod.util.Messenger;
 import uk.co.jcox.votemod.util.PlayerFetcher;
 import uk.co.jcox.votemod.votes.BaseVote;
 
@@ -49,7 +48,9 @@ public class VoteManager {
         if(Main.getPermissions().playerHas(source, "votemod.vote")) {
             return true;
         }
-        Messenger.sendMessage(source, plugin.getLangValue("votemod-vote-message"));
+        //message that the player they do not have votemod.vote
+        plugin.textSystem().sendMessage(source, "votemod-vote-message");
+
         return false;
     }
 
@@ -60,7 +61,7 @@ public class VoteManager {
         int online = Bukkit.getOnlinePlayers().size();
         int neededOnline = plugin.getConfig().getInt("required-players");
         if(online > neededOnline && online != 0) {
-            Messenger.sendMessage(source, plugin.getLangValue("less-required-message"));
+            plugin.textSystem().sendMessage(source, "less-required-message");
             return false;
         }
 
@@ -69,7 +70,7 @@ public class VoteManager {
         int max = plugin.getConfig().getInt("allowed-ongoing-votes");
 
         if(numberOfVotes >= max) {
-            Messenger.sendMessage(source, plugin.getLangValue("ongoing-message"));
+            plugin.textSystem().sendMessage(source, "ongoing-message");
             return false;
         }
         return true;
@@ -95,7 +96,7 @@ public class VoteManager {
             String world = Bukkit.getWorlds().get(0).getName();
             boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
             if(hasBypass) {
-                Messenger.sendMessage(source, plugin.getLangValue("bypass-message"));
+                plugin.textSystem().sendMessage(source, "bypass-message");
                 return;
             }
             System.out.println("[1]We are on the: " + Thread.currentThread().getName());
@@ -103,10 +104,10 @@ public class VoteManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
 
                 this.ongoing.put(target, vote);
-                String type = plugin.getLangValue(vote.getType());
-                String msg = plugin.getLangValue("started-vote-message").replace("|", type);
-                System.out.println("[2]We are on the: " + Thread.currentThread().getName());
-                Messenger.broadcast(source.getName() + " " + msg + " " + vote.getTargetPlayer());
+                String type = plugin.textSystem().getResource(vote.getType());
+
+                //todo make this work with the new additional system
+                plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), vote.getTargetPlayer());
                 setTimeout(target);
             });
 
@@ -118,7 +119,7 @@ public class VoteManager {
             return true;
         }
 
-        Messenger.sendMessage(voter, plugin.getLangValue("no-such-vote-message"));
+        plugin.textSystem().sendMessage(voter, "no-such-vote-message");
         return false;
     }
 
@@ -135,12 +136,11 @@ public class VoteManager {
         //Check if the voter has already voted on this particular type of vote
         if(ongoing.get(target).containsVoter(voter)) {
             //Voter has already voted
-            Messenger.sendMessage(voter, plugin.getLangValue("already-voted-message"));
+            plugin.textSystem().sendMessage(voter, "already-voted-message");
             return;
         }
 
-        String message = plugin.getLangValue("pass-vote-message");
-        Messenger.broadcast(voter.getName() + " " + message + " " + target);
+        plugin.textSystem().broadcastMessage("pass-vote-message", voter.getName(), target);
         ongoing.get(target).addVoter(voter);
     }
 
@@ -150,16 +150,18 @@ public class VoteManager {
         }
         ongoing.remove(vote);
 
-        Messenger.sendMessage(player, plugin.getLangValue("removed-vote-message"));
+        plugin.textSystem().sendMessage(player, "removed-vote-message");
         return true;
     }
 
     public void remove(String vote, boolean successful) {
         ongoing.remove(vote);
         if(successful) {
-            Messenger.broadcast(plugin.getLangValue("successful-message").replace("|", vote));
+            //todo add new additional system
+            plugin.textSystem().broadcastMessage("successful-message", vote);
+
         } else {
-            Messenger.broadcast(plugin.getLangValue("expired-message").replace("|", vote));
+            plugin.textSystem().broadcastMessage("expired-message", vote);
         }
     }
 
@@ -179,16 +181,20 @@ public class VoteManager {
     public void listVotes(Player player) {
 
         if(ongoing.size() == 0) {
-            Messenger.sendMessage(player, plugin.getLangValue("no-ongoing-votes-message"));
+            plugin.textSystem().sendMessage(player, "no-ongoing-votes-message");
             return;
         }
         for(BaseVote vote : ongoing.values()) {
             String name =vote.getTargetPlayer();
             int votes = vote.getNumberOfVoters();
             System.out.println("Type:" + vote.getType());
-            String type = plugin.getLangValue(vote.getType());
-            String msg = (type + " " + name + " [" + votes + " " + plugin.getLangValue("votes-message") + "]");
-            Messenger.sendMessage(player, msg);
+            String type = plugin.textSystem().getResource(vote.getType());
+            //todo update new system to additionals
+//            String msg = (type + " " + name + " [" + votes + " " + plugin.getLangValue("votes-message") + "]");
+//            Messenger.sendMessage(player, msg);
+
+            //Vote {0} {1} [{votes} votes]
+            plugin.textSystem().sendMessage(player, "votes-message", type, name, votes + "");
         }
     }
 }

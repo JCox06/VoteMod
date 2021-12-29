@@ -26,7 +26,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
-import uk.co.jcox.votemod.util.Messenger;
 
 
 @CommandAlias("votemod")
@@ -41,7 +40,7 @@ public class CMDVoteMod extends BaseCommand {
     @Subcommand("clearvotes")
     @CommandPermission("votemod.admin")
     public void clearVotes(Player player) {
-        player.sendMessage(plugin.getLangValue("reset-vote-manager-message"));
+        plugin.textSystem().sendMessage(player, "reset-vote-manager-message");
         plugin.setNewVoteManager();
     }
 
@@ -56,8 +55,9 @@ public class CMDVoteMod extends BaseCommand {
     @Subcommand("bug")
     @Description("Tells players how to submit a bug report")
     public void bugReport(Player player) {
-        String msg = plugin.getLangValue("bug-report-message");
-        Messenger.sendMessage(player, msg + " " + Main.HOME_PAGE + "issues");
+
+        //todo need to setup bug-report with additionals
+        plugin.textSystem().sendMessage(player, "bug-report-message", Main.HOME_PAGE + "issues");
     }
 
     @Subcommand("list")

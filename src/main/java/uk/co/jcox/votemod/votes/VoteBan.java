@@ -40,8 +40,7 @@ public class VoteBan extends BaseVote {
 
     @Override
     protected void onAction(String playerName) {
-        //todo proper message handliing ie resource bundle
-        String reason = plugin.getLangValue("ban-reason");
+        String reason = plugin.textSystem().getResource("ban-reason");
         Bukkit.getBanList(getBanType()).addBan(playerName, reason, getExpire(), "VoteMod");
 
         if(Bukkit.getPlayer(playerName) != null) {
