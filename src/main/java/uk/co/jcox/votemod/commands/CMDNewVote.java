@@ -34,7 +34,7 @@ import uk.co.jcox.votemod.votes.VotePardon;
 @CommandAlias("newvote|nv")
 public class CMDNewVote extends BaseCommand {
 
-    private Main plugin;
+    private final Main plugin;
 
     public CMDNewVote(Main plugin) {
         this.plugin = plugin;

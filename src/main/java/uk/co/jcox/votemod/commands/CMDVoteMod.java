@@ -31,7 +31,7 @@ import uk.co.jcox.votemod.Main;
 @CommandAlias("votemod")
 public class CMDVoteMod extends BaseCommand {
 
-    private Main plugin;
+    private final Main plugin;
 
     public CMDVoteMod(Main plugin) {
         this.plugin = plugin;
@@ -47,7 +47,7 @@ public class CMDVoteMod extends BaseCommand {
     @Subcommand("removevote")
     @CommandPermission("votemod.admin")
     @Syntax("<targetName>")
-    public void clearVote(Player player, String args[]) {
+    public void clearVote(Player player, String[] args) {
         String targetName = args[0];
         plugin.getVoteManager().remove(player, targetName);
     }
@@ -55,8 +55,6 @@ public class CMDVoteMod extends BaseCommand {
     @Subcommand("bug")
     @Description("Tells players how to submit a bug report")
     public void bugReport(Player player) {
-
-        //todo need to setup bug-report with additionals
         plugin.textSystem().sendMessage(player, "bug-report-message", Main.HOME_PAGE + "issues");
     }
 

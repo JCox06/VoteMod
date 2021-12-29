@@ -70,8 +70,7 @@ public class VoteBan extends BaseVote {
             LocalDateTime ldt = LocalDateTime.now();
             LocalDateTime expires = ldt.plusHours(hours);
 
-            Date date = Date.from(expires.atZone(ZoneId.systemDefault()).toInstant());
-            return date;
+            return Date.from(expires.atZone(ZoneId.systemDefault()).toInstant());
         }
     }
 }

@@ -26,7 +26,6 @@ import co.aikar.commands.PaperCommandManager;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,22 +34,15 @@ import uk.co.jcox.votemod.commands.CMDNewVote;
 import uk.co.jcox.votemod.commands.CMDVote;
 import uk.co.jcox.votemod.commands.CMDVoteMod;
 import uk.co.jcox.votemod.util.TextSystem;
-
 import java.io.File;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 
 public class Main extends JavaPlugin {
 
-    private FileConfiguration config;
     private VoteManager voteManager;
-    private ResourceBundle language;
     private TextSystem ts;
 
     private static Permission permissions = null;
-    private static String VERSION;
 
     private final boolean unitTesting;
     public static final String HOME_PAGE = "https://github.com/JCox06/VoteMod/";
@@ -68,10 +60,9 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.saveDefaultConfig();
         this.ts = new TextSystem(this);
-        initializeConfig();
         if(!unitTesting) checkServerOnlineState();
-        VERSION = this.getDescription().getVersion();
         this.voteManager = new VoteManager(this);
         if(!unitTesting) initializeBstats();
         if(!unitTesting) initializeVault();
@@ -83,19 +74,11 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-
-    private void initializeConfig() {
-        this.saveDefaultConfig();
-        config = this.getConfig();
-    }
-
     private void initializeBstats() {
-        //For anonymous data collection
         int pluginID = 12378;
         new Metrics(this, pluginID);
 
     }
-
 
     private void initializeVault() {
         if(getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -103,10 +86,8 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
-
     }
 
     public void checkServerOnlineState() {

@@ -38,12 +38,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerFetcher implements Runnable {
 
+    //todo This class needs re-writing
+
     private static final Map<String, UUID> cache = new HashMap<>();
 
     private static final String LINK = "https://api.mojang.com/users/profiles/minecraft/";
-    private String playerName;
-    private UUID uuid;
-    private CompletableFuture<UUID> cf;
+    private final String playerName;
+    private final CompletableFuture<UUID> cf;
 
     public PlayerFetcher(String playerName, CompletableFuture<UUID> cf) {
         this.playerName = playerName;
@@ -53,7 +54,7 @@ public class PlayerFetcher implements Runnable {
     @Override
     public void run() {
 
-        Thread.currentThread().setName("Player-Fetcher-Thread");
+        Thread.currentThread().setName("VoteMod/PlayerFetcher");
 
         if(cache.containsKey(playerName)) {
             cf.complete(cache.get(playerName));
@@ -67,43 +68,38 @@ public class PlayerFetcher implements Runnable {
             return;
         }
 
-        if(true) {
-            System.out.println("Testing.. .Skipping mojang");
-            cf.complete(UUID.fromString("09413898-5191-4627-9a03-0cdcfce8857b"));
-            return;
-        }
 
+        Scanner scanner = null;
         try{
             URL url = new URL(LINK + playerName);
             System.out.println("Contacting mojang");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
             connection.connect();
 
-            int rescode = connection.getResponseCode();;
-
-            if (rescode != 200) {
+            if(connection.getResponseCode() != 200) {
                 cf.cancel(true);
                 return;
             }
 
             StringBuilder response = new StringBuilder();
-            Scanner scanner = new Scanner(url.openStream());
+            scanner = new Scanner(url.openStream());
 
             while(scanner.hasNext()) {
                 response.append(scanner.nextLine());
             }
 
-            scanner.close();
-
             JSONParser parse = new JSONParser();
             JSONObject data = (JSONObject) parse.parse(response.toString());
 
-            uuid = UUID.fromString(getFullUUID( (String) data.get("id")));
+            UUID uuid = UUID.fromString(getFullUUID((String) data.get("id")));
             cache.put(playerName, uuid);
             cf.complete(uuid);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
     }
 
@@ -121,6 +117,6 @@ public class PlayerFetcher implements Runnable {
     }
 
     public static void saveCache() {
-
+        //This method may be implemented to write the cache to a file
     }
 }

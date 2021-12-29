@@ -33,16 +33,14 @@ import java.util.logging.Logger;
 
 public class TextSystem {
 
-    private final Main plugin;
     private final ResourceBundle language;
-    private static Logger logger;
+    private final Logger logger;
 
     public TextSystem(Main p) {
         logger = p.getLogger();
-        plugin = p;
 
-        String languageCode = plugin.getConfig().getString("lang");
-        Locale locale = null;
+        String languageCode = p.getConfig().getString("lang");
+        Locale locale;
 
         if(languageCode == null || languageCode.equalsIgnoreCase("default")) {
             //Set the locale to the JVM
@@ -67,21 +65,22 @@ public class TextSystem {
     }
 
     //Populate message with correct args
-    //todo This method is currently resulting in server crashes
-    private String populateMessage(String key, String args[]) {
+    private String populateMessage(String key, String[] args) {
 
         String message = getLanguageValue(key);
 
-        int expectedArgs = 0;
-        do {
-            System.out.println(message.contains("{" + expectedArgs + "}"));
-            if(message.contains("{" + expectedArgs + "}")) {
-                message.replace("{" + expectedArgs + "}", args[expectedArgs]);
-                expectedArgs++;
-            }
-        } while(! message.contains("{" + expectedArgs + "}"));
+        int count = 0;
+        while(true) {
+            String match = "{" + count + "}";
 
-        return message;
+            if(message.contains(match)) {
+                message = message.replace(match, args[count]);
+
+                count++;
+            } else {
+                return message;
+            }
+        }
     }
 
     public void sendMessage(Player player, String key, String ...additional) {

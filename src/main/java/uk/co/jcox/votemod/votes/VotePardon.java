@@ -46,9 +46,7 @@ public class VotePardon extends BaseVote{
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(playerName, cf));
         cf.whenComplete( (res, err) -> {
             if(err == null) {
-                Bukkit.getScheduler().runTask(plugin, bukkitTask -> {
-                    Bukkit.getOfflinePlayer(res).setWhitelisted(true);
-                });
+                Bukkit.getScheduler().runTask(plugin, bukkitTask -> Bukkit.getOfflinePlayer(res).setWhitelisted(true));
             }
         });
 

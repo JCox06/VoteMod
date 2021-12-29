@@ -106,8 +106,7 @@ public class VoteManager {
                 this.ongoing.put(target, vote);
                 String type = plugin.textSystem().getResource(vote.getType());
 
-                //todo make this work with the new additional system
-                plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), vote.getTargetPlayer());
+                plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), type,  vote.getTargetPlayer());
                 setTimeout(target);
             });
 
@@ -189,11 +188,6 @@ public class VoteManager {
             int votes = vote.getNumberOfVoters();
             System.out.println("Type:" + vote.getType());
             String type = plugin.textSystem().getResource(vote.getType());
-            //todo update new system to additionals
-//            String msg = (type + " " + name + " [" + votes + " " + plugin.getLangValue("votes-message") + "]");
-//            Messenger.sendMessage(player, msg);
-
-            //Vote {0} {1} [{votes} votes]
             plugin.textSystem().sendMessage(player, "votes-message", type, name, votes + "");
         }
     }
