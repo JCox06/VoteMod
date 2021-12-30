@@ -101,10 +101,14 @@ public class TextSystem {
         logger.info(msg);
     }
 
+    public void logError(String key, String ...additional) {
+        logger.warning(populateMessage(key, additional));
+    }
+
 
     public void debugMessage(String string) {
         if(debug) {
-            logger.info("[DEBUG/MODE] " + string);
+            logger.info("[DEBUG/MODE] [THREAD: " + Thread.currentThread().getName() + "] " + string);
         }
     }
 

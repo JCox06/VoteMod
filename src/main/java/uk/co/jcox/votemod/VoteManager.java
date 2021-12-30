@@ -88,6 +88,8 @@ public class VoteManager {
 
         if(resistance.contains(target)) {
             plugin.textSystem().sendMessage(source, "bypass-message");
+            plugin.textSystem().debugMessage(source.getName() + " will not be voted as they have recently " +
+                    "had a vote expire towards them");
             return;
         }
 
@@ -175,7 +177,10 @@ public class VoteManager {
             plugin.textSystem().debugMessage("Added resistance for: " + vote);
             this.resistance.add(vote);
 
-            Runnable task = () -> resistance.remove(vote);
+            Runnable task = () -> {
+                resistance.remove(vote);
+                plugin.textSystem().debugMessage(vote + " has been removed from the resistance list");
+            };
 
             int time = 20 * 60 * plugin.getConfig().getInt("vote-resistance-expire");
             Bukkit.getScheduler().runTaskLater(plugin, task, time);

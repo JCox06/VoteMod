@@ -71,7 +71,9 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        textSystem().debugMessage("Cancelling tasks...");
         Bukkit.getScheduler().cancelTasks(this);
+        textSystem().debugMessage("Tasks cancelled, shutting down");
     }
 
     private void initializeBstats() {
@@ -85,6 +87,11 @@ public class Main extends JavaPlugin {
             ts.logMessage("permission-setup-fail-log");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        if(getServer().getPluginManager().getPlugin("LuckPerms") == null) {
+            ts.logError("no-luckperms-message");
+            ts.debugMessage("The absence of Luckperms will result in offline player voting to be unavailable");
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
