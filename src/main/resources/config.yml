@@ -17,11 +17,6 @@ vote-resistance: true
 #How long should a player have resistance, in minutes
 vote-resistance-expire: 5
 
-#Time at which voting is made available. To make votes always available set enable-time false
-enable-time: false
-start-time: 18-00
-end-time: 09-00
-
 #Number of votes required for a full vote completion. This is expressed as a percentage
 needed-votes: 50
 
