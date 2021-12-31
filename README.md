@@ -16,7 +16,7 @@ The current actions are ban and unban but many more are being planned!
 - Make sure you are running a Minecraft server that support Bukkit plugin. (Spigot, Paper, etc)
 - Download and place the VoteMod.jar into the plugins directory on the server
 - Make sure you download the Vault plugin and place it in the plugins directory on the server
-- Download a permission plugin of your choice that works with Vault and offline player permissions, for example LuckPerms
+- Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms
 
 ## Issues and Bugs
 - Multiple Language support is currently half working. Some of the keys have been put in the wrong place making for a buggy language system when not using English.
