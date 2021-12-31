@@ -105,8 +105,10 @@ public class VoteManager {
             boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
             if(hasBypass) {
                 plugin.textSystem().sendMessage(source, "bypass-message");
+                plugin.textSystem().debugMessage("Job Completed");
                 return;
             }
+            plugin.textSystem().debugMessage("Job Completed");
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 plugin.textSystem().debugMessage("Running task on main server thread");

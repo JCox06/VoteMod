@@ -91,7 +91,7 @@ public class Main extends JavaPlugin {
 
         if(getServer().getPluginManager().getPlugin("LuckPerms") == null) {
             ts.logError("no-luckperms-message");
-            ts.debugMessage("The absence of Luckperms will result in offline player voting to be unavailable");
+            ts.debugMessage("The absence of a permission plugin will result in offline player voting to be unavailable");
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();

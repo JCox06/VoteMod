@@ -27,7 +27,6 @@ author: Jacob Cox
 api-version: 1.17
 
 depend: [Vault]
-softdepend: [LuckPerms]
 
 permissions:
   votemod.vote:

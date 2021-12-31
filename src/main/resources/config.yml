@@ -1,7 +1,8 @@
 #VoteMod - https://github.com/JCox06/VoteMod
-#For this plugin to work you MUST!
-#     1) Install the Vault plugin
-#     2) Have the server in online mode
+#It is highly recommended installing a permission plugin and Vault to this server.
+#If you do not have a permission plugin installed, then Vault will be unable to make
+#offline player calls, the functionality of the plugin will be restricted without these
+#critical plugins installed.
 
 
 #Language - Default will choose the language of the JVM installed

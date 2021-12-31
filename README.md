@@ -1,4 +1,4 @@
-# <u> VoteMod (A3.5)</u>
+# <u> VoteMod (A3.6)</u>
 Early Development!
 
 How many times have you had it? You have a Minecraft server and ask your newly 
