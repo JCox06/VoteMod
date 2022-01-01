@@ -18,6 +18,15 @@ The current actions are ban and unban but many more are being planned!
 - Make sure you download the Vault plugin and place it in the plugins directory on the server
 - Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms
 
+## Usage
+- To allow players to start votes and vote on currently ongoing votes, assign them the VoteMod.vote permission
+- To allow players to be immune from being voted assign them the VoteMod.bypass permission
+- To start a vote type the command: /newvote {pardon/ban} <playername>
+- To vote on a vote, type the command: /vote pass <playername>
+- To list all the currently ongoing votes, type the command: /votemod list
+- Other commands are available to clear all votes and cancel a current vote
+- If a vote expires or is cancelled by an administrator, then the player will be added to an immune List where they cannot be voted for a certain amount of time.
+
 ## Issues and Bugs
 - Multiple Language support is currently half working. Some of the keys have been put in the wrong place making for a buggy language system when not using English.
 - If the user has installed Vault but not a permission plugin that can respond to offline player checking then the asyncronouse thread responsible for obtaining the UUID of the player and sending the request to vault will hang. This will result in the Vote not being added. 
