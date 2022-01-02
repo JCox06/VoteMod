@@ -34,7 +34,9 @@ The current actions are ban and unban but many more are being planned!
 ## Disclaimer and info
 This is a small project that I hope to work on. I'm going to be honest, although the plugin works I'm not too confident on the quality of my code, in fact not at all!
 
-I genuinely struggled on certain bits of the project, and in fact after completing it I really need to practise some multi threading in Java.
+Additionally I'm really annoyed that this requires two other dependencies. It's annoying, even if it's not really an issue, it's annoying, to require Vault and a plugin manager, maybe too much? I don't know. Hopefully this isn't an issue for most people and I myself mostly install Vault and Luckperms the moment I start a new server.
+
+Also, I genuinely struggled on certain bits of the project, and in fact after completing it I really need to practise some multi threading in Java.
 
 I also feel as though I would like to add some sort of dependancy injection at some point.
 
