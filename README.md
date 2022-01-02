@@ -21,8 +21,8 @@ The current actions are ban and unban but many more are being planned!
 ## Usage
 - To allow players to start votes and vote on currently ongoing votes, assign them the VoteMod.vote permission
 - To allow players to be immune from being voted assign them the VoteMod.bypass permission
-- To start a vote type the command: /newvote {pardon/ban} <playername>
-- To vote on a vote, type the command: /vote pass <playername>
+- To start a vote type the command: /newvote {pardon/ban} -playername-
+- To vote on a vote, type the command: /vote pass -playername-
 - To list all the currently ongoing votes, type the command: /votemod list
 - Other commands are available to clear all votes and cancel a current vote
 - If a vote expires or is cancelled by an administrator, then the player will be added to an immune List where they cannot be voted for a certain amount of time.
