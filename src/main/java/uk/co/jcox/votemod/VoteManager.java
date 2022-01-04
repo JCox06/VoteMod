@@ -60,9 +60,15 @@ public class VoteManager {
         //check players online
         int online = Bukkit.getOnlinePlayers().size();
         int neededOnline = plugin.getConfig().getInt("required-players");
-        if(online > neededOnline && neededOnline != 0) {
-            plugin.textSystem().sendMessage(source, "less-required-message");
-            return false;
+
+        plugin.textSystem().debugMessage("ONLINE PLAYERS: " + online);
+        plugin.textSystem().debugMessage("REQUIRED PLAYERS: " + neededOnline);
+
+        if(neededOnline != 0) {
+            if(neededOnline > online) {
+                plugin.textSystem().sendMessage(source, "less-required-message");
+                return false;
+            }
         }
 
         //Check ongoing votes
