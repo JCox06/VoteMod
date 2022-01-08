@@ -27,7 +27,7 @@ import co.aikar.commands.annotation.*;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.Main;
 
-@CommandAlias("vote|v|votar|abstimmung")
+@CommandAlias("vote|v")
 public class CMDVote extends BaseCommand {
     private final Main plugin;
 
@@ -35,11 +35,17 @@ public class CMDVote extends BaseCommand {
         this.plugin = plugin;
     }
 
-    @Syntax("PlayerName")
     @Subcommand("pass")
     @CommandPermission("votemod.vote")
     @Description("Allows players to vote on an already existing vote")
     public void incrementVote(Player voter, String target) {
         plugin.getVoteManager().vote(voter, target.toLowerCase());
+    }
+
+    @Subcommand("list")
+    @Description("Lists the current ongoing votes")
+    @CommandPermission("votemod.list")
+    public void listVotes(Player player) {
+        plugin.getVoteManager().listVotes(player);
     }
 }

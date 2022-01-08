@@ -46,7 +46,6 @@ public class CMDVoteMod extends BaseCommand {
 
     @Subcommand("removevote")
     @CommandPermission("votemod.admin")
-    @Syntax("<targetName>")
     public void clearVote(Player player, String[] args) {
         String targetName = args[0];
         plugin.getVoteManager().remove(player, targetName);
@@ -58,10 +57,6 @@ public class CMDVoteMod extends BaseCommand {
         plugin.textSystem().sendMessage(player, "bug-report-message", Main.HOME_PAGE + "issues");
     }
 
-    @Subcommand("list")
-    @Description("Lists the current ongoing votes")
-    public void listVotes(Player player) {
-        plugin.getVoteManager().listVotes(player);
-    }
+
 
 }

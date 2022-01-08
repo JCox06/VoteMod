@@ -43,7 +43,6 @@ public class CMDNewVote extends BaseCommand {
     @Subcommand("ban")
     @Description("Starts a new vote kick/ban")
     @CommandPermission("votemod.vote")
-    @Syntax("<player>")
     public void startVoteKick(Player player, String[] args) {
         String playerName = args[0];
         if(playerName != null) {
@@ -55,7 +54,6 @@ public class CMDNewVote extends BaseCommand {
     @Subcommand("pardon")
     @Description("Starts a new vote pardon. Player is unabnned and added to whitelist")
     @CommandPermission("votemod.vote")
-    @Syntax("<player>")
     public void startVotePardon(Player player, String[] args) {
         String playerName = args[0];
         if(playerName != null) {

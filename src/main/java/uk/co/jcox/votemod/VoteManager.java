@@ -27,7 +27,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.util.PlayerFetcher;
 import uk.co.jcox.votemod.votes.BaseVote;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
