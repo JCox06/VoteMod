@@ -10,6 +10,8 @@ The problem comes when server administrators leave the server, at this point any
 
 VoteMod is a plugin for Spigot Minecraft Servers that aims to remove these issues. This is done through a voting-like system. This mechanic allows standard players to take administrative actions on a server.
 
+VoteMod is, and will always be a plugin that specifically targets small suvival servers, servers that are for a group of friends. It is not really intended for any other use case. In fact I made this plugin so I could, along with my friends, play Minecraft in a safe way without having one player ruin the fun for everyone else.
+
 The current actions are ban and unban but many more are being planned!
 
 ## Installation
