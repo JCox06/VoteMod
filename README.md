@@ -16,7 +16,7 @@ The current actions are ban and unban but many more are being planned!
 - Make sure you are running a Minecraft server that support Bukkit plugin. (Spigot, Paper, etc)
 - Download and place the VoteMod.jar into the plugins directory on the server
 - Make sure you download the Vault plugin and place it in the plugins directory on the server
-- Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms
+- Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms. This is a critical step this MUST not be skipped.
 
 Please note that at the current stage no pre-compiled jar is provided.
 ## Usage
@@ -27,10 +27,6 @@ Please note that at the current stage no pre-compiled jar is provided.
 - To list all the currently ongoing votes, type the command: /votemod list
 - Other commands are available to clear all votes and cancel a current vote
 - If a vote expires or is cancelled by an administrator, then the player will be added to an immune List where they cannot be voted for a certain amount of time.
-
-## Issues and Bugs
-- Multiple Language support is currently half working. Some of the keys have been put in the wrong place making for a buggy language system when not using English.
-- If the user has installed Vault but not a permission plugin that can respond to offline player checking then the asyncronouse thread responsible for obtaining the UUID of the player and sending the request to vault will hang. This will result in the Vote not being added. 
 
 ## Disclaimer and info
 This is a small project that I hope to work on. I'm going to be honest, although the plugin works I'm not too confident on the quality of my code, in fact not at all!
