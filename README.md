@@ -13,7 +13,7 @@ VoteMod is a plugin for Spigot Minecraft Servers that aims to remove these issue
 The current actions are ban and unban but many more are being planned!
 
 ## Installation
-1. Make sure you are running a Minecraft server that support Bukkit plugin. (Spigot, Paper, etc)
+1. Make sure you are running a Minecraft server that supports Bukkit plugins (Spigot, Paper, etc), and that the server is in online mode!
 2. Download and place the VoteMod.jar into the plugins directory on the server
 3. Make sure you download the Vault plugin and place it in the plugins directory on the server
 4. Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms. This is a critical step this MUST not be skipped.
