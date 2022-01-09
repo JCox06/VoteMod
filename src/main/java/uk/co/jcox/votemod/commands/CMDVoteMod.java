@@ -38,14 +38,14 @@ public class CMDVoteMod extends BaseCommand {
     }
 
     @Subcommand("clearvotes")
-    @CommandPermission("votemod.admin")
+    @CommandPermission("votemod.clear")
     public void clearVotes(Player player) {
         plugin.textSystem().sendMessage(player, "reset-vote-manager-message");
         plugin.setNewVoteManager();
     }
 
     @Subcommand("removevote")
-    @CommandPermission("votemod.admin")
+    @CommandPermission("votemod.delete")
     public void clearVote(Player player, String[] args) {
         String targetName = args[0];
         plugin.getVoteManager().remove(player, targetName);
