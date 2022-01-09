@@ -18,8 +18,14 @@ vote-resistance: true
 #How long should a player have resistance, in minutes
 vote-resistance-expire: 5
 
-#Number of votes required for a full vote completion. This is expressed as a percentage
-needed-votes: 50
+#Number of votes required for a vote to be classed as successful
+# % will take the value and find the % of the amount of players to class when a vote is complete
+# - will take the value and subtract from the number of online players
+# a standard value will hard code the number of players needed for a successful vote
+#EG1: 50% will find half the number of players online and will use the value to consider when a vote is successful
+#EG2: 1- will find one subtract the online players and will use the value to consider when a vote is successful
+#EG3: 5 will hard code 5 as the value to be checked to consider if a vote is successful
+needed-votes: 1-
 
 #How many players need to be online before someone can vote.
 required-players: 5
