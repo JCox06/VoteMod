@@ -24,7 +24,8 @@ vote-resistance-expire: 5
 # a standard value will hard code the number of players needed for a successful vote
 #EG1: 50% will find half the number of players online and will use the value to consider when a vote is successful
 #EG2: 1- will find one subtract the online players and will use the value to consider when a vote is successful
-#EG3: 5 will hard code 5 as the value to be checked to consider if a vote is successful
+#EG3: 2- will find two subtract the online player and will use the value to consider when a vote is successful
+#EG4: 5 will hard code 5 as the value to be checked to consider if a vote is successful
 needed-votes: 1-
 
 #How many players need to be online before someone can vote.
