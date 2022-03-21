@@ -104,6 +104,11 @@ public class VoteManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, pf);
         plugin.textSystem().debugMessage("Waiting for response...");
         cf.whenComplete( (res, err) -> {
+            if(err != null) {
+                plugin.textSystem().sendMessage(vote.getSourcePlayer(), "server-api-error");
+                plugin.textSystem().debugMessage("Error when trying to get UUID. ");
+            }
+
             plugin.textSystem().debugMessage("Sending vault request");
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(res);
             String world = Bukkit.getWorlds().get(0).getName();

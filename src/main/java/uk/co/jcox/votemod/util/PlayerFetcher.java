@@ -88,6 +88,12 @@ public class PlayerFetcher implements Runnable {
                 return;
             }
 
+            if(connection.getResponseCode() == 204) {
+                tx.debugMessage("Content not found");
+                cf.cancel(true);
+                return;
+            }
+
             StringBuilder response = new StringBuilder();
             scanner = new Scanner(url.openStream());
 
