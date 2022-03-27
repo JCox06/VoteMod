@@ -20,7 +20,7 @@ The current actions are ban and unban but many more are being planned!
 3. Make sure you download the Vault plugin and place it in the plugins directory on the server
 4. Download a permission plugin of your choice that works with Vault offline player permission checks, for example LuckPerms. This is a critical step this MUST not be skipped.
 
-Please note that at the current stage no pre-compiled jar is provided.
+The pre-compiled jar file can be found at https://www.spigotmc.org/resources/votemod.101015/
 ## Usage
 - To allow players to start votes and vote on currently ongoing votes, assign them the VoteMod.vote permission
 - To allow players to be immune from being voted assign them the VoteMod.bypass permission
