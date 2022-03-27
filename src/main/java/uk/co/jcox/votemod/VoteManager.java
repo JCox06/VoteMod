@@ -83,7 +83,6 @@ public class VoteManager {
 
 
     public void newVote(BaseVote vote) {
-
         Player source = vote.getSourcePlayer();
         String target = vote.getTargetPlayer();
 
@@ -98,39 +97,34 @@ public class VoteManager {
             return;
         }
 
-        //Check if the target has the bypass permission
-        CompletableFuture<UUID> cf = new CompletableFuture<>();
-        PlayerFetcher pf = new PlayerFetcher(target, cf, plugin.textSystem());
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, pf);
-        plugin.textSystem().debugMessage("Waiting for response...");
-        cf.whenComplete( (res, err) -> {
-            if(err != null) {
-                plugin.textSystem().sendMessage(vote.getSourcePlayer(), "server-api-error");
-                plugin.textSystem().debugMessage("Error when trying to get UUID. ");
+        //Check if the target has a bypass permission
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new PlayerFetcher(plugin, target, uuid -> {
+
+            if(uuid == null) {
+                plugin.textSystem().debugMessage("Response from server was null");
+                Bukkit.getScheduler().runTask(plugin, () -> plugin.textSystem().sendMessage(source, "server-api-error"));
+                return;
             }
 
             plugin.textSystem().debugMessage("Sending vault request");
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(res);
-            String world = Bukkit.getWorlds().get(0).getName();
-            boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
-            if(hasBypass) {
-                plugin.textSystem().sendMessage(source, "bypass-message");
-                plugin.textSystem().debugMessage("Job Completed");
-                return;
-            }
-            plugin.textSystem().debugMessage("Job Completed");
+            final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+            final String world = Bukkit.getWorlds().get(0).getName();
+            final boolean hasBypass = Main.getPermissions().playerHas(world, offlinePlayer, "votemod.bypass");
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                plugin.textSystem().debugMessage("Running task on main server thread");
-                this.ongoing.put(target, vote);
-                String type = plugin.textSystem().getResource(vote.getType());
-                plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), type,  vote.getTargetPlayer());
-                setTimeout(target);
-                plugin.textSystem().debugMessage("Added vote");
+                if(hasBypass) {
+                    plugin.textSystem().sendMessage(source, "bypass-message");
+                    return;
+                }
+                    this.ongoing.put(target, vote);
+                    String type = plugin.textSystem().getResource(vote.getType());
+                    plugin.textSystem().broadcastMessage("started-vote-message", source.getName(), type,  vote.getTargetPlayer());
+                    setTimeout(target);
+                    plugin.textSystem().debugMessage("Added vote");
             });
-
-        });
+        }));
     }
+
 
     private boolean checkVoteExists(Player voter, String vote) {
         if(ongoing.containsKey(vote)) {

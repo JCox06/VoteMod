@@ -1,8 +1,8 @@
 #VoteMod - https://github.com/JCox06/VoteMod
-#It is highly recommended installing a permission plugin and Vault to this server.
-#If you do not have a permission plugin installed, then Vault will be unable to make
-#offline player calls, the functionality of the plugin will be restricted without these
-#critical plugins installed.
+#This plugin requires vault to be installed to the server
+#This plugin requires online mode to be set to true
+#It is strongly recommended installing a permission plugin that can handle offline player calls (like LuckPerms)
+#Without the above criteria this software will NOT RUN as expected and WILL crash
 
 
 #Language - Default will choose the language of the JVM installed
@@ -22,10 +22,6 @@ vote-resistance-expire: 5
 # % will take the value and find the % of the amount of players to class when a vote is complete
 # - will take the value and subtract from the number of online players
 # a standard value will hard code the number of players needed for a successful vote
-#EG1: 50% will find half the number of players online and will use the value to consider when a vote is successful
-#EG2: 1- will find one subtract the online players and will use the value to consider when a vote is successful
-#EG3: 2- will find two subtract the online player and will use the value to consider when a vote is successful
-#EG4: 5 will hard code 5 as the value to be checked to consider if a vote is successful
 needed-votes: 1-
 
 #How many players need to be online before someone can vote.

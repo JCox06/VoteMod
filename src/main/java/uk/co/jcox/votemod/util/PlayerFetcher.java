@@ -26,96 +26,29 @@ import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import uk.co.jcox.votemod.Main;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class PlayerFetcher implements Runnable {
 
-    //todo This class needs re-writing
-
-    private static final Map<String, UUID> cache = new HashMap<>();
 
     private static final String LINK = "https://api.mojang.com/users/profiles/minecraft/";
     private final String playerName;
-    private final CompletableFuture<UUID> cf;
+    private final Main plugin;
     private final TextSystem tx;
+    private final Consumer<UUID> callback;
 
-    public PlayerFetcher(String playerName, CompletableFuture<UUID> cf, TextSystem tx) {
+    public PlayerFetcher(Main plugin, String playerName, Consumer<UUID> callback) {
         this.playerName = playerName;
-        this.cf = cf;
-        this.tx = tx;
-    }
-
-    @Override
-    public void run() {
-
-        Thread.currentThread().setName("VoteMod/PlayerFetcher");
-        tx.debugMessage("PlayerFetcher thread has started");
-
-        if(cache.containsKey(playerName)) {
-            cf.complete(cache.get(playerName));
-            tx.debugMessage("Found " + playerName + " in the cache");
-            return;
-        }
-
-        if(Bukkit.getPlayer(playerName) != null) {
-            UUID playerUuid = Bukkit.getPlayer(playerName).getUniqueId();
-            cache.put(playerName, playerUuid);
-            cf.complete(playerUuid);
-            tx.debugMessage("Found " + playerName + " in the list of online players");
-            return;
-        }
-
-
-        Scanner scanner = null;
-        try{
-            URL url = new URL(LINK + playerName);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-
-            tx.debugMessage("Connecting to Mojang: " + LINK + playerName);
-
-            if(connection.getResponseCode() != 200) {
-                tx.debugMessage("Error: " + connection.getResponseCode() + ". Cancelling request");
-                cf.cancel(true);
-                return;
-            }
-
-            if(connection.getResponseCode() == 204) {
-                tx.debugMessage("Content not found");
-                cf.cancel(true);
-                return;
-            }
-
-            StringBuilder response = new StringBuilder();
-            scanner = new Scanner(url.openStream());
-
-            while(scanner.hasNext()) {
-                response.append(scanner.nextLine());
-            }
-
-            JSONParser parse = new JSONParser();
-            JSONObject data = (JSONObject) parse.parse(response.toString());
-
-            UUID uuid = UUID.fromString(getFullUUID((String) data.get("id")));
-            tx.debugMessage("Built UUID from player " + playerName + " as: " + uuid);
-            cache.put(playerName, uuid);
-            cf.complete(uuid);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        } finally {
-            if (scanner != null) {
-                tx.debugMessage("Closing Scanner");
-                scanner.close();
-            }
-        }
+        this.tx = plugin.textSystem();
+        this.plugin = plugin;
+        this.callback = callback;
     }
 
     private static String getFullUUID(String uuid) {
@@ -128,10 +61,52 @@ public class PlayerFetcher implements Runnable {
         String l = uuid.substring(16, 20);
         l += "-";
         String rest = uuid.substring(20);
-        return i + j  + k + l + rest;
+        return i + j + k + l + rest;
     }
 
-    public static void saveCache() {
-        //This method may be implemented to write the cache to a file
+
+    @Override
+    public void run() {
+
+        tx.debugMessage("PlayerFetcher thread has started");
+
+
+        Scanner scanner = null;
+        try {
+            URL url = new URL(LINK + playerName);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+
+            tx.debugMessage("Connecting to Mojang: " + LINK + playerName);
+
+            if(connection.getResponseCode() == 200) {
+                StringBuilder response = new StringBuilder();
+                scanner = new Scanner(url.openStream());
+
+                while (scanner.hasNext()) {
+                    response.append(scanner.nextLine());
+                }
+
+                JSONParser parse = new JSONParser();
+                JSONObject data = (JSONObject) parse.parse(response.toString());
+
+                UUID uuid = UUID.fromString(getFullUUID((String) data.get("id")));
+                tx.debugMessage("Built UUID from player " + playerName + " as: " + uuid);
+
+
+                callback.accept(uuid);
+            } else {
+                callback.accept(null);
+            }
+
+        } catch (IOException | ParseException e) {
+            callback.accept(null);
+            e.printStackTrace();
+        } finally {
+            if (scanner != null) {
+                tx.debugMessage("Closing Scanner");
+                scanner.close();
+            }
+        }
     }
 }

@@ -24,16 +24,28 @@ package uk.co.jcox.votemod.votes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import uk.co.jcox.votemod.Main;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
 
 public abstract class BaseVote {
     protected Main plugin;
     private final List<Player> voters;
     private final String targetPlayerName;
+    private UUID targetUUID;
     private int requiredPlayers;
     private final String name;
+
+    private final static String API = "https://api.mojang.com/users/profiles/minecraft/";
 
     protected BaseVote(Player sourcePlayer, String targetPlayerName, Main plugin, String name) {
         this.targetPlayerName = targetPlayerName;

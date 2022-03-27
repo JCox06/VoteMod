@@ -108,7 +108,7 @@ public class TextSystem {
 
     public void debugMessage(String string) {
         if(debug) {
-            logger.info("[DEBUG/MODE] [THREAD: " + Thread.currentThread().getName() + "] " + string);
+            logger.info("[DEBUG] " + string);
         }
     }
 
