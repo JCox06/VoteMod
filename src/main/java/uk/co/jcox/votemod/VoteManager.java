@@ -27,8 +27,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import uk.co.jcox.votemod.util.PlayerFetcher;
 import uk.co.jcox.votemod.votes.BaseVote;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class VoteManager {
@@ -86,7 +89,7 @@ public class VoteManager {
         Player source = vote.getSourcePlayer();
         String target = vote.getTargetPlayer();
 
-        if(! (checkEnvironmentConditions(source) && checkVoter(source))) {
+        if(! (checkEnvironmentConditions(source) || checkVoter(source))) {
             return;
         }
 

@@ -24,28 +24,17 @@ package uk.co.jcox.votemod.votes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import uk.co.jcox.votemod.Main;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
 
 public abstract class BaseVote {
-    protected Main plugin;
     private final List<Player> voters;
     private final String targetPlayerName;
-    private UUID targetUUID;
-    private int requiredPlayers;
     private final String name;
-
-    private final static String API = "https://api.mojang.com/users/profiles/minecraft/";
+    protected Main plugin;
+    private int requiredPlayers;
 
     protected BaseVote(Player sourcePlayer, String targetPlayerName, Main plugin, String name) {
         this.targetPlayerName = targetPlayerName;
@@ -66,10 +55,10 @@ public abstract class BaseVote {
 
     public final void addVoter(Player votingPlayer) {
         this.voters.add(votingPlayer);
-            if (voters.size() >= requiredPlayers) {
-                onAction(targetPlayerName);
-                plugin.getVoteManager().remove(targetPlayerName, true);
-            }
+        if (voters.size() >= requiredPlayers) {
+            onAction(targetPlayerName);
+            plugin.getVoteManager().remove(targetPlayerName, true);
+        }
     }
 
     public String getType() {
@@ -88,12 +77,34 @@ public abstract class BaseVote {
         return voters.size();
     }
 
+//    private void calculateRequired() {
+//        double votePercentage = plugin.getConfig().getInt("needed-votes");
+//        double playersOnline = Bukkit.getServer().getOnlinePlayers().size();
+//        double votesRequired = (votePercentage / 100) * playersOnline;
+//        plugin.textSystem().debugMessage("Required Votes to become successful is: " + Math.round(votesRequired));
+//        this.requiredPlayers = (int) Math.round(votesRequired);
+//    }
+
     private void calculateRequired() {
-        double votePercentage = plugin.getConfig().getInt("needed-votes");
-        double playersOnline = Bukkit.getServer().getOnlinePlayers().size();
-        double votesRequired = (votePercentage / 100) * playersOnline;
-        plugin.textSystem().debugMessage("Required Votes to become successful is: " + Math.round(votesRequired));
-        this.requiredPlayers = (int) Math.round(votesRequired);
+        String configRequired = plugin.getConfig().getString("needed-votes");
+        int players = Bukkit.getServer().getOnlinePlayers().size();
+
+        if(configRequired.contains("%")) {
+            int decimalMultiplier = Integer.parseInt(configRequired.replace("%", ""));
+            this.requiredPlayers = (decimalMultiplier / 100) * players;
+        }
+        else if(configRequired.contains("-")) {
+            int subtractor = Integer.parseInt(configRequired.replace("-", ""));
+            int playersRequired = players - subtractor;
+            if(playersRequired < 0) {
+                this.requiredPlayers = 0;
+            } else {
+                this.requiredPlayers = playersRequired;
+            }
+        } else {
+            this.requiredPlayers = plugin.getConfig().getInt("needed-votes");
+        }
     }
+
     protected abstract void onAction(String playerName);
 }
