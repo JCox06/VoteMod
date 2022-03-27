@@ -45,51 +45,13 @@ softdepend: [Luckperms]
 
 
 permissions:
-  VoteMod.*:
-    default: op
-    description: Gives access to everything in VoteMod including the managing of votes
-    children:
-      VoteMod.participate: true
-      VoteMod.start: true
-      VoteMod.manage: true
-
-  VoteMod.standard:
-    description: Gives access to standard features such as creating and participating in votes
-    children:
-      VoteMod.participate: true
-      VoteMod.start: true
-
-  VoteMod.manage:
-    description: Gives access to destroying votes
-    children:
-      VoteMod.clear: true
-      VoteMod.delete: true
-
-  VoteMod.start:
-    description: Gives access to starting votes of any type
-    children:
-      VoteMod.startban: true
-      VoteMod.startpardon: true
-
-  VoteMod.participate:
-    description: Gives access to allow voting of already existing votes
-    VoteMod.ban: true
-    VoteMod.startpardon: true
-
-
   #Actual Permissions
   VoteMod.clear:
     description: Gives access to deleting all votes
   VoteMod.delete:
     description: Gives access to removing specific votes
-  VoteMod.startban:
-    description: Gives access to starting a vote ban
-  VoteMod.startpardon:
-    description: Gives access to starting a vote pardon
-  VoteMod.ban:
-    description: Gives access to participating in a vote ban
-  VoteMod.pardon:
-    description: Gives access to participating in a vote pardon
+  VoteMod.vote:
+    description: Allows players to participate in voting
   VoteMod.bypass:
     description: Players with this permission cannot be voted.
     default: op
