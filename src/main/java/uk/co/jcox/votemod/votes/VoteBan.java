@@ -41,24 +41,12 @@ public class VoteBan extends BaseVote {
     @Override
     protected void onAction(String playerName) {
         String reason = plugin.textSystem().getResource("ban-reason");
-        Bukkit.getBanList(getBanType()).addBan(playerName, reason, getExpire(), "VoteMod");
+        Bukkit.getBanList(BanList.Type.NAME).addBan(playerName, reason, getExpire(), "VoteMod");
 
         if(Bukkit.getPlayer(playerName) != null) {
             Bukkit.getPlayer(playerName).kickPlayer(reason);
         }
 
-    }
-
-    private BanList.Type getBanType() {
-        String type = plugin.getConfig().getString("ban-method");
-        BanList.Type banType;
-        if(type.equalsIgnoreCase("IP"))  {
-            banType = BanList.Type.IP;
-        } else {
-            banType = BanList.Type.NAME;
-        }
-
-        return banType;
     }
 
     private Date getExpire() {
