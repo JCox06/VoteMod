@@ -90,8 +90,10 @@ public abstract class BaseVote {
         int players = Bukkit.getServer().getOnlinePlayers().size();
 
         if(configRequired.contains("%")) {
-            int decimalMultiplier = Integer.parseInt(configRequired.replace("%", ""));
-            this.requiredPlayers = (decimalMultiplier / 100) * players;
+            double decimalMultiplier = (double) Integer.parseInt(configRequired.replace("%", "")) /100 ;
+            plugin.textSystem().debugMessage("Percentage of: " + decimalMultiplier * players);
+            this.requiredPlayers = (int) Math.round(decimalMultiplier * players);
+
         }
         else if(configRequired.contains("-")) {
             int subtractor = Integer.parseInt(configRequired.replace("-", ""));
@@ -104,6 +106,8 @@ public abstract class BaseVote {
         } else {
             this.requiredPlayers = plugin.getConfig().getInt("needed-votes");
         }
+
+        plugin.textSystem().debugMessage("require players for vote completion: " + this.requiredPlayers);
     }
 
     protected abstract void onAction(String playerName);

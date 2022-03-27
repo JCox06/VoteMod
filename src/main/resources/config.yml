@@ -19,10 +19,12 @@ vote-resistance: true
 vote-resistance-expire: 5
 
 #Number of votes required for a vote to be classed as successful
+#Add a percent or a negative sign to the end of your value:
 # % will take the value and find the % of the amount of players to class when a vote is complete
 # - will take the value and subtract from the number of online players
 # a standard value will hard code the number of players needed for a successful vote
-needed-votes: 1-
+#Examples: [50%, 3-, 20, 22%, 5-, 1-, 10]
+needed-votes: 5
 
 #How many players need to be online before someone can vote.
 required-players: 5

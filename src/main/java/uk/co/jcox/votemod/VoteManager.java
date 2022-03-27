@@ -89,7 +89,7 @@ public class VoteManager {
         Player source = vote.getSourcePlayer();
         String target = vote.getTargetPlayer();
 
-        if(! (checkEnvironmentConditions(source) || checkVoter(source))) {
+        if(! (checkEnvironmentConditions(source) && checkVoter(source))) {
             return;
         }
 

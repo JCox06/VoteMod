@@ -35,12 +35,12 @@ MIT License
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
     </properties>
 
     <groupId>uk.co.jcox</groupId>
     <artifactId>VoteMod</artifactId>
-    <version>A3.7</version>
+    <version>A4.0</version>
 
 
     <repositories>

@@ -12,7 +12,7 @@ import uk.co.jcox.votemod.votes.VoteBan;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//todo tests-tests-tests-tests!
+
 public class BaseVoteTest {
     private ServerMock server;
     private Main plugin;
@@ -31,16 +31,6 @@ public class BaseVoteTest {
 
     @Test
     public void testRequired() throws Exception{
-        server.setPlayers(5);
-        BaseVote vote = new VoteBan(server.getPlayer(0), server.getPlayer(1).getName(), plugin);
-        assertEquals(3, vote.getRequired());
-
-        server.setPlayers(10);
-        vote = new VoteBan(server.getPlayer(0), server.getPlayer(1).getName(), plugin);
-        assertEquals(5, vote.getRequired());
-
-        server.setPlayers(543);
-        vote = new VoteBan(server.getPlayer(0), server.getPlayer(1).getName(), plugin);
-        assertEquals(272, vote.getRequired());
+       //todo get plugin config and run tests
     }
 }
